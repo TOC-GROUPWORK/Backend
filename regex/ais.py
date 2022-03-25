@@ -2,7 +2,7 @@ import re
 import requests
 import json
 
-print('load regex.py')
+# print('load regex.py')
 AIS_APPLE = 'https://www.hotdeal.ais.co.th/hotdeal-apple.html'
 AIS_SAMSUNG = 'https://www.hotdeal.ais.co.th/hotdeal-samsung.html'
 # DTAC = ''
@@ -167,9 +167,11 @@ def get_iphone_5g():
 
     data_td = get_td(iphone_5g)
     data = get_text(data_td)
-    return json.dumps(data, ensure_ascii=False)
+    # return json.dumps(data, ensure_ascii=False)
+    return data
 
-# s = version_2()
+# s = get_iphone_5g()
+# print(s)
 # with open('AIS_APPLE.json', 'w', encoding='utf-8') as writefile:
 #     json.dump(s, writefile, ensure_ascii=False)
 # print('Done writing json')
