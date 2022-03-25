@@ -167,8 +167,8 @@ def get_iphone_5g():
 
     data_td = get_td(iphone_5g)
     data = get_text(data_td)
-    # return json.dumps(data, ensure_ascii=False)
-    return data
+    return json.dumps(data, ensure_ascii=False)
+    # return data
 
 # s = get_iphone_5g()
 # print(s)
