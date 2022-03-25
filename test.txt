@@ -1,0 +1,36 @@
+<div class="list-section lsc-style -hightlight" data-packname="5G Speed Max" data-id="567" data-price="349" data-category="Most Advanced Services" data-variant="Postpaid" data-list="Postpaid List" data-position="1" data-simtype="Postpaid SIM" data-dl-speed="Unlimited" data-talk="100 min" data-wifi="Unlimited">
+                        <div class="list-head h-style">
+                            <span class="title-txt">เน็ตแรงเต็มแม็กซ์<br>
+โทรคุ้มทุกเครือข่าย</span>            </div>
+                    <div class="list-content ct-style3">
+                        <span class="group-txt cost-package">
+                            <span>เริ่มต้นเพียง</span>
+                            <strong>349<em>บาท</em></strong>
+                            <span>ต่อเดือน</span>
+                        </span>
+                        <i class="ar-triangle ar-gray"></i>
+                    </div>
+                    <div class="list-content ct-style">
+                        <span class="sg-txt">แพ็กเกจ 5G สปีด แม็กซ์</span>
+                    </div>
+                    <div class="list-content ct-style2 orange-bg">  <i class="sprite-icons white-mobile-icon posi-st"></i>
+                        <span class="group-txt-1 white-txt">
+                            <span class="title-1">โทร 100 นาที</span><span class="cmn-txt-1"></span>
+                        </span>
+                    </div>
+                    <div class="list-content ct-style2 orange-bg">  <i class="sprite-icons orange-4g-5g-icon posi-st3"></i>
+                                    <span class="group-txt desc-speed"><span class="">20<em>GB</em></span><span class="">ที่ความเร็วสูงสุด 1  Gbps</span></span>
+                                </div>
+                                <div class="list-foot mtp-btn-block">
+                                    <a class="nm-btn med-gray-bg" href="//truemoveh.truecorp.co.th/package/most_advanced_services/567/postpaid/แพ็กเกจ_5G_สปีด_แม็กซ์">
+                                        <span id="btn_detail" package_download="Unlimited" talk_time="100 min" mobile_net="Unlimited" position="1">
+                                            รายละเอียด
+                                        </span>
+                                    </a>
+                                    <a class="nm-btn red-bg" href="https://store.truecorp.co.th/online-store/postpaid/L91761560?nas_code=0058896&amp;proposition_amdoc=RMV000000012845">
+                                        <span id="btn_detail" package_download="Unlimited" talk_time="100 min" mobile_net="Unlimited" position="1">
+                                            ซื้อเลย
+                                        </span>
+                                    </a>    
+                                </div>
+                            </div>
