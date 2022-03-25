@@ -1,0 +1,1015 @@
+[
+    {
+        "model": "iPhone 13 Pro Max",
+        "size": "1 TB",
+        "type": "รายเดือน",
+        "normalprice": "62,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "58,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "55,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "54,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "53,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "57,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "53,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "50,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "49,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13 Pro Max",
+        "size": "512 GB",
+        "type": "รายเดือน",
+        "normalprice": "54,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "50,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "47,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "46,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "45,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "49,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "45,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "42,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "41,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13 Pro Max",
+        "size": "256 GB",
+        "type": "รายเดือน",
+        "normalprice": "46,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "42,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "39,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "38,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "37,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "41,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "37,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "34,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "33,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13 Pro Max",
+        "size": "128 GB",
+        "type": "รายเดือน",
+        "normalprice": "42,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "38,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "35,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "34,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "33,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "37,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "33,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "30,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "29,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13 Pro",
+        "size": "1 TB",
+        "type": "รายเดือน",
+        "normalprice": "58,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "54,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "51,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "50,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "49,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "53,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "49,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "46,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "45,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13 Pro",
+        "size": "512 GB",
+        "type": "รายเดือน",
+        "normalprice": "50,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "46,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "43,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "42,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "41,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "45,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "41,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "38,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "37,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13 Pro",
+        "size": "256 GB",
+        "type": "รายเดือน",
+        "normalprice": "42,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "38,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "35,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "34,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "33,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "37,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "33,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "30,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "29,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13 Pro",
+        "size": "128 GB",
+        "type": "รายเดือน",
+        "normalprice": "38,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "34,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "31,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "30,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "29,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "33,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "29,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "26,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "25,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13",
+        "size": "512 GB",
+        "type": "รายเดือน",
+        "normalprice": "41,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "38,400",
+                "paid": "1,000",
+                "package": "599"
+            },
+            {
+                "specialprice": "37,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "34,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "33,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "32,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "36,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "32,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "29,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "28,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13",
+        "size": "256 GB",
+        "type": "รายเดือน",
+        "normalprice": "33,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "29,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "26,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "25,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "24,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "28,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "4,000",
+                "paid": " ",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "21,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "20,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13",
+        "size": "128 GB",
+        "type": "รายเดือน",
+        "normalprice": "29,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "25,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "22,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "21,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "20,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "24,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "20,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "17,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "16,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13 mini",
+        "size": "512 GB",
+        "type": "รายเดือน",
+        "normalprice": "37,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "34,990",
+                "paid": "1,000",
+                "package": "599"
+            },
+            {
+                "specialprice": "33,990",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "30,900",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "29,400",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "28,400",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "32,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "28,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "25,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "24,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13 mini",
+        "size": "256 GB",
+        "type": "รายเดือน",
+        "normalprice": "29,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "25,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "22,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "21,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "20,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "24,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "20,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "17,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "16,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 13 mini",
+        "size": "128 GB",
+        "type": "รายเดือน",
+        "normalprice": "25,900",
+        "detail": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions": [
+            {
+                "specialprice": "21,900",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "18,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "17,400",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "16,400",
+                "paid": "4,500",
+                "package": "1,699"
+            }
+        ],
+        "type_18": "สัญญา 18 เดือน",
+        "detail_18": "(ย้ายค่ายลดเพิ่ม  แพ็ก 699-1,499 ลดเพิ่ม 1,000แพ็ก 1,699 ลดเพิ่ม 2,000)",
+        "promotions_18": [
+            {
+                "specialprice": "20,400",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "16,600",
+                "paid": "4,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "13,700",
+                "paid": "5,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "12,700",
+                "paid": "6,000",
+                "package": "1,699"
+            }
+        ]
+    },
+    {
+        "model": "iPhone 12 Pro",
+        "size": "512 GB",
+        "type": "รายเดือน",
+        "normalprice": "48,900",
+        "detail": "ย้ายค่ายลดเพิ่ม1,000 บ.",
+        "promotions": [
+            {
+                "specialprice": "42,300",
+                "paid": "1,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "39,700",
+                "paid": "2,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "37,700",
+                "paid": "3,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "36,700",
+                "paid": "4,000",
+                "package": "1,699"
+            }
+        ],
+        "type_18": null,
+        "detail_18": null,
+        "promotions_18": null
+    },
+    {
+        "model": "iPhone 12 Pro",
+        "size": "256 GB",
+        "type": "รายเดือน",
+        "normalprice": "40,900",
+        "detail": "ย้ายค่ายลดเพิ่ม1,000 บ.",
+        "promotions": [
+            {
+                "specialprice": "34,800",
+                "paid": "-",
+                "package": "599"
+            },
+            {
+                "specialprice": "34,300",
+                "paid": "-",
+                "package": "699"
+            },
+            {
+                "specialprice": "31,700",
+                "paid": "1,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "29,700",
+                "paid": "2,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "28,700",
+                "paid": "3,000",
+                "package": "1,699"
+            }
+        ],
+        "type_18": null,
+        "detail_18": null,
+        "promotions_18": null
+    },
+    {
+        "model": "iPhone 12 Pro",
+        "size": "128 GB",
+        "type": "รายเดือน",
+        "normalprice": "36,900",
+        "detail": "ย้ายค่ายลดเพิ่ม1,000 บ.",
+        "promotions": [
+            {
+                "specialprice": "29,800",
+                "paid": "1,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "27,200",
+                "paid": "2,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "25,200",
+                "paid": "3,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "24,200",
+                "paid": "4,000",
+                "package": "1,699"
+            }
+        ],
+        "type_18": null,
+        "detail_18": null,
+        "promotions_18": null
+    },
+    {
+        "model": "iPhone 12 ",
+        "size": "128 GB",
+        "type": "รายเดือน",
+        "normalprice": "27,900",
+        "detail": "ย้ายค่ายลดเพิ่ม1,000 บ.",
+        "promotions": [
+            {
+                "specialprice": "22,500",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "19,900",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "18,000",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "17,000",
+                "paid": "5,000",
+                "package": "1,699"
+            }
+        ],
+        "type_18": null,
+        "detail_18": null,
+        "promotions_18": null
+    },
+    {
+        "model": "iPhone 12 ",
+        "size": "64 GB",
+        "type": "รายเดือน",
+        "normalprice": "25,900",
+        "detail": "ย้ายค่ายลดเพิ่ม1,000 บ.",
+        "promotions": [
+            {
+                "specialprice": "21,000",
+                "paid": "2,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "18,400",
+                "paid": "3,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "16,500",
+                "paid": "4,000",
+                "package": "1,499"
+            },
+            {
+                "specialprice": "15,500",
+                "paid": "5,000",
+                "package": "1,699"
+            }
+        ],
+        "type_18": null,
+        "detail_18": null,
+        "promotions_18": null
+    },
+    {
+        "model": "iPhone SE 3 ",
+        "size": "256 GB",
+        "type": "รายเดือน",
+        "normalprice": "21,900",
+        "detail": "ย้ายค่ายลดเพิ่ม1,000 บ.",
+        "promotions": [
+            {
+                "specialprice": "18,800",
+                "paid": "500",
+                "package": "599"
+            },
+            {
+                "specialprice": "18,300",
+                "paid": "1,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "15,400",
+                "paid": "2,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "13,900",
+                "paid": "3,000",
+                "package": "1,499"
+            }
+        ],
+        "type_18": null,
+        "detail_18": null,
+        "promotions_18": null
+    },
+    {
+        "model": "iPhone SE 3 ",
+        "size": "128 GB",
+        "type": "รายเดือน",
+        "normalprice": "17,900",
+        "detail": "ย้ายค่ายลดเพิ่ม1,000 บ.",
+        "promotions": [
+            {
+                "specialprice": "14,800",
+                "paid": "500",
+                "package": "599"
+            },
+            {
+                "specialprice": "14,300",
+                "paid": "1,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "11,400",
+                "paid": "2,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "9,900",
+                "paid": "3,000",
+                "package": "1,499"
+            }
+        ],
+        "type_18": null,
+        "detail_18": null,
+        "promotions_18": null
+    },
+    {
+        "model": "iPhone SE 3 ",
+        "size": "64 GB",
+        "type": "รายเดือน",
+        "normalprice": "15,900",
+        "detail": "ย้ายค่ายลดเพิ่ม1,000 บ.",
+        "promotions": [
+            {
+                "specialprice": "12,800",
+                "paid": "500",
+                "package": "599"
+            },
+            {
+                "specialprice": "12,300",
+                "paid": "1,000",
+                "package": "699"
+            },
+            {
+                "specialprice": "9,400",
+                "paid": "2,000",
+                "package": "1,199"
+            },
+            {
+                "specialprice": "7,900",
+                "paid": "3,000",
+                "package": "1,499"
+            }
+        ],
+        "type_18": null,
+        "detail_18": null,
+        "promotions_18": null
+    }
+]

@@ -6,11 +6,13 @@ import json
 # TRUE = "https://store.truecorp.co.th/online-store/item/L91759660?ln=th&_ga=2.96047327.2117052161.1647572364-1913214076.1647421330&matcode=3000093932&selected_campaign=mnp_bundling_existing&rc=1699"
 # TRUE_PACKAGE = 'https://truemoveh.truecorp.co.th/package/postpaid'
 # AIS = 'https://www.hotdeal.ais.co.th/hotdeal-samsung.html'
-
+AIS_APPLE = 'https://www.hotdeal.ais.co.th/hotdeal-apple.html'
+TRUE_APPLE = 'https://store.truecorp.co.th/online-store/item/L91759660?ln=th&_ga=2.156839603.946800142.1648195462-1913214076.1647421330&matcode=3000093932&selected_campaign=mnp_bundling_existing&rc=1699'
 # url = AIS
 
-# page = requests.get(url)
-# page.encoding = 'utf-8'
+page = requests.get(AIS_APPLE)
+page.encoding = 'utf-8'
+print('After requests')
 # print(page.encoding)
 # print(page.text)
 
