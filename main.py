@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Response
-import regex.ais as ais
+import regex.Ais.ais as ais
 
 app = FastAPI()
 
