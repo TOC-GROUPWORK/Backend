@@ -5,10 +5,9 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Connect Backend server TOC"}
 
-@app.get("/ais")
-async def get_ais(response: Response):
-    # response.headers["charset"] = "utf-8"
-    return ais.get_iphone_5g()
+@app.get("/ais/{number_id}")
+async def get_ais(number_id: int):
+    return ais.get_iphone(number_id)
 
