@@ -65,7 +65,7 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
 
     for index, ram in enumerate(rams):
 
-        # print(ram)
+        print(ram)
         product[ram] = list()
 
         selector = f'div.grid.lg\:grid-col-\[80px-1fr\].gap-4.lg\:gap-4 > div:nth-child(4) > div:nth-child({index + 1}) > button.p-4.py-2'
@@ -73,8 +73,10 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
         try:
             await page.click(selector)
             await page.waitFor(5000)
-            await page.screenshot({'path': f'{ram}.png'})
+            # await page.screenshot({'path': f'{ram}.png'})
         except:
+            if ram != "page":
+                continue
             pass
 
         page_body = await page.evaluate('() => document.getElementsByTagName("BODY")[0].innerHTML')
@@ -102,7 +104,7 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
             await page.click(selector, { 'delay': 3,})
             # await promotions[index].click()
             await page.waitFor(1000)
-            await page.screenshot({'path': f'{index}.png', 'fullPage': True})
+            # await page.screenshot({'path': f'{index}.png', 'fullPage': True})
 
             page_body = await page.evaluate('() => document.getElementsByTagName("BODY")[0].innerHTML')
 
@@ -122,12 +124,12 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
 
                 detail = "EMPTY TEXT"
                 if name == "ลูกค้าปัจจุบันทรูมูฟ เอช":
-                    detail = re.findall(PACKAGE_DETAIL, package[0])
+                    detail = re.findall(PACKAGE_DETAIL, package[0])[0]
                     packages = re.findall(PACKAGE_NEW_USER, package[0])
                     for p in packages:
-                        price = re.findall(PROMOTION_PRICE, p[0])[0][0]
+                        price = re.findall(PROMOTION_PRICE, p[0])[0][1]
                         package_price = re.findall(PACKAGE_PRICE, p[0])[0]
-                        prepaid_price = re.findall(PREPAID_PRICE, p[0])[0]
+                        prepaid_price = re.findall(PREPAID_PRICE, p[0])
                         package_type = re.findall(PACKAGE_TYPE, p[0])[0]
                         # print(detail)
                         # print(price)
@@ -137,7 +139,7 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
                         
                         promotion_dict['package'].append({
                             'specialprice' : price,
-                            'prepaid' : prepaid_price,
+                            'prepaid' : prepaid_price[0] if len(prepaid_price) > 0 else '-',
                             'package' : package_price,
                             'type' : package_type,
                             'detail' : detail,
@@ -145,7 +147,7 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
                 else:
                     price = re.findall(PROMOTION_PRICE, package[0])[0][0]
                     package_price = re.findall(PACKAGE_PRICE, package[0])[0]
-                    prepaid_price = re.findall(PREPAID_PRICE, package[0])[0]
+                    prepaid_price = re.findall(PREPAID_PRICE, package[0])
                     package_type = re.findall(PACKAGE_TYPE, package[0])[0]
                     
                     # print(detail)
@@ -155,7 +157,7 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
                     # print(package_type)
                     promotion_dict['package'].append({
                         'specialprice' : price,
-                        'prepaid' : prepaid_price,
+                        'prepaid' : prepaid_price[0] if len(prepaid_price) > 0 else '-',
                         'package' : package_price,
                         'type' : package_type,
                     })
@@ -172,14 +174,14 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
             # f.close()
     return product
 
-async def get_model_data(page, link: str):
+async def get_model_data(page, id: int, link: str):
     # link ='https://store.truecorp.co.th/online-store/item/L91765936?ln=th'
     # print()
 
     try:
         await page.goto(link)
-        await page.waitFor(5000)
-        await page.screenshot({ 'path': 'image.png'})
+        await page.waitFor(10000)
+        # await page.screenshot({ 'path': 'image.png'})
 
         page_body = await page.evaluate('() => document.getElementsByTagName("BODY")[0].innerHTML')
         container = re.findall(STORE_DETAIL, page_body)[0][0]
@@ -207,11 +209,12 @@ async def get_model_data(page, link: str):
             background_color.append(bg[0])
 
         rams = re.findall(RAM_LIST, detail_container)
-        ram_list = rams if len(rams) > 0 else [""]
+        ram_list = rams if len(rams) > 0 else ["page"]
 
         # print(color_name, background_color, ram_list)
 
         product = {
+            'id': id,
             'model': product_name,
             'link' : link,
             'pictures': product_image,
@@ -221,24 +224,27 @@ async def get_model_data(page, link: str):
             'promotions' : await get_promotions(page, product_name, ram_list),
         }
 
-        json_string = json.dumps(product, indent=4, ensure_ascii=False).encode('utf8')
+        # json_string = json.dumps(product, indent=4, ensure_ascii=False).encode('utf8')
 
-        f = open('files.txt',"w+", encoding='utf-8')
-        f.write(json_string.decode())
-        f.close()
+        # f = open('files.txt',"w+", encoding='utf-8')
+        # f.write(json_string.decode())
+        # f.close()
+
+        return product
 
     except Exception as e:
         print(e)
         pass
 
-    return
+    return None
 
 async def get_model_iterator(page, links: list[str]):
-
-    for link in links:
-        await get_model_data(page, link)
-        break
-    return
+    models = list()
+    for id, link in enumerate(links):
+        model = await get_model_data(page, id, link)
+        if model is not None:
+            models.append(model)
+    return models
 
 async def get_data(page, brands: list[str]):
 
@@ -246,11 +252,10 @@ async def get_data(page, brands: list[str]):
     for brand in brands:
         # print(brand)
         links = get_links_by_brand(brand)
-        data = await get_model_iterator(page, links)
-        # datas.append(data)
+        # data = await get_model_iterator(page, links)
+        datas[brand] = await get_model_iterator(page, links)
         print()
-        break
-    return data
+    return datas
 
 async def main():
     
@@ -274,7 +279,12 @@ async def main():
     page = await browser.newPage()
     await page.setViewport({'width': 1920, 'height': 1080})
 
-    await get_data(page, brands)
+    data = await get_data(page, brands)
+
+    json_string = json.dumps(data, indent=4, ensure_ascii=False).encode('utf8')
+
+    with open('data.json', 'w+', encoding='utf-8') as writefile:
+        writefile.write(json_string.decode())
 
     await browser.close()
 

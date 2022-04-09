@@ -47,8 +47,7 @@ def get_brands(main_url: str) -> list[str]:
 
 async def get_page_quantity(page, brand: str) -> int:
      print('\nGET MODELS AT ' + str.upper(brand) + ' brand!!!')
-
-     uri = 'https://truemoveh.truecorp.co.th/device?search_brand=' + brand + '&search_network=all&page=1'
+     uri = 'https://truemoveh.truecorp.co.th/device?search_brand=' + brand
      # print(uri)
 
      await page.goto(uri)
