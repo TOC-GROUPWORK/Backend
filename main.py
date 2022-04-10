@@ -1,5 +1,7 @@
+import string
 from fastapi import FastAPI, Response
 import regex.Ais.ais as ais
+import regex.Dtac.dtac as dtac
 
 app = FastAPI()
 
@@ -46,3 +48,7 @@ async def get_ais(number_id: int):
 @app.get("/ais/ruio/{number_id}")
 async def get_ais(number_id: int):
     return ais.get_ruio(number_id)
+
+@app.get("/dtac/{brand}")
+async def get_dtac(brand: str):
+    return dtac.scraping(brand=brand)
