@@ -1,5 +1,7 @@
 import re
+import ast
 import asyncio
+import requests
 from pyppeteer import launch
 import json
 
@@ -37,27 +39,19 @@ PACKAGE_DETAIL      = r'<div class=\"grid place-items-center bg-red-pink-gradien
 def get_brands() -> list[str]:
     print('GET ALL BRANDS!!')
 
-    f= open("files/brands.txt","r")
-    brands = []
-    for brand in f:
-        brands.append(brand.split('\n')[0])
-    f.close()
+    # f= open("files/brands.txt","r")
+    # brands = []
+    # for brand in f:
+    #     brands.append(brand.split('\n')[0])
+    # f.close()
 
-    return brands
+    response = requests.get('http://127.0.0.1:8000/brands')
+    response = response._content.decode('utf-8')
+    response = ast.literal_eval(response)
 
-def get_links_by_brand(brand: str) -> list[str]:
+    return response
 
-    print(f'GET LINKS BY {str.upper(brand)} BRAND')
-
-    links = list()
-    f = open(f'files/{brand}.txt', 'r')
-    for link in f:
-        links.append(link.split('\n')[0])
-    f.close()
-
-    return links
-
-async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
+async def get_promotions(page, model_id: str, rams: list[str]) -> dict:
     # print()
     # ram_click = await page.querySelectorAll('div.grid.lg\:grid-col-\[80px-1fr\].gap-4.lg\:gap-4 > div:nth-child(4) > div > button')
 
@@ -79,6 +73,12 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
                 continue
             pass
 
+        data = { 'model_id': model_id, 'ram': ram }
+        detail_response = requests.post('http://127.0.0.1:8000/detail', json = data)
+        detail_response = detail_response._content.decode('utf-8')
+        detail_response = json.loads(ast.literal_eval(repr(detail_response)))
+        # print(detail_response)
+
         page_body = await page.evaluate('() => document.getElementsByTagName("BODY")[0].innerHTML')
 
         promotion_container = re.findall(PROMOTION_CONTAINER, page_body)[0][0]
@@ -95,8 +95,22 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
             price = re.findall(START_PRICE, promotion[0])[0]
             # print(name, price)
 
+            promotion_dict['model_detail_id'] = detail_response['_id']
             promotion_dict['name'] = name
             promotion_dict['detail'] = f'เริ่มต้น {price} บาท'
+
+            if promotion_dict['name'] == 'เครื่องเปล่า':
+                data = { 'normalprice': promotion_dict['detail'] }
+                # print(data)
+                # promotion_res = 
+                requests.put('http://127.0.0.1:8000/detail/' + detail_response['_id'], json = data)
+                # promotion_res = promotion_res._content.decode('utf-8')
+                continue
+
+            promotion_res = requests.post('http://127.0.0.1:8000/promotion', json = promotion_dict)
+            promotion_res = promotion_res._content.decode('utf-8')
+            promotion_res = json.loads(ast.literal_eval(repr(promotion_res)))
+            # print(type(promotion_res))
 
             selector = f'div.flex-auto > div > div.grid.gap-1.grid-flow-col > button.rounded-xl.w-full.hover\:shadow-lg:nth-child({index + 1}) > div'
             # print(selector)
@@ -119,14 +133,14 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
             # print(len(package_box))
 
             promotion_dict['package'] = list()
-            for package in package_box:
+            for index, package in enumerate(package_box):
                 # print(package[0]) 
 
                 detail = "EMPTY TEXT"
                 if name == "ลูกค้าปัจจุบันทรูมูฟ เอช":
                     detail = re.findall(PACKAGE_DETAIL, package[0])[0]
                     packages = re.findall(PACKAGE_NEW_USER, package[0])
-                    for p in packages:
+                    for i, p in enumerate(packages):
                         price = re.findall(PROMOTION_PRICE, p[0])[0][1]
                         package_price = re.findall(PACKAGE_PRICE, p[0])[0]
                         prepaid_price = re.findall(PREPAID_PRICE, p[0])
@@ -137,13 +151,23 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
                         # print(prepaid_price)
                         # print(package_type)
                         
-                        promotion_dict['package'].append({
+                        # promotion_dict['package'].append({
+                        #     'specialprice' : price,
+                        #     'prepaid' : prepaid_price[0] if len(prepaid_price) > 0 else '-',
+                        #     'package' : package_price,
+                        #     'type' : package_type,
+                        #     'detail' : detail,
+                        # })
+                        p_data = {
+                            'package_no' : str(index) + str(i),
+                            'promotion_id' : promotion_res['_id'],
                             'specialprice' : price,
                             'prepaid' : prepaid_price[0] if len(prepaid_price) > 0 else '-',
                             'package' : package_price,
-                            'type' : package_type,
-                            'detail' : detail,
-                        })
+                            'package_type' : package_type,
+                        }
+
+                        requests.post('http://127.0.0.1:8000/package', json = p_data)
                 else:
                     price = re.findall(PROMOTION_PRICE, package[0])[0][0]
                     package_price = re.findall(PACKAGE_PRICE, package[0])[0]
@@ -155,12 +179,24 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
                     # print(package_price)
                     # print(prepaid_price)
                     # print(package_type)
-                    promotion_dict['package'].append({
+                    # promotion_dict['package'].append({
+                    #     'specialprice' : price,
+                    #     'prepaid' : prepaid_price[0] if len(prepaid_price) > 0 else '-',
+                    #     'package' : package_price,
+                    #     'type' : package_type,
+                    # })
+
+                    p_data = {
+                        'package_no' : str(index),
+                        'promotion_id' : promotion_res['_id'],
                         'specialprice' : price,
                         'prepaid' : prepaid_price[0] if len(prepaid_price) > 0 else '-',
                         'package' : package_price,
-                        'type' : package_type,
-                    })
+                        'package_type' : package_type,
+                    }
+
+                    requests.post('http://127.0.0.1:8000/package', json = p_data)
+
             # print()
 
             product[ram].append(promotion_dict)
@@ -174,9 +210,9 @@ async def get_promotions(page, product_name: str, rams: list[str]) -> dict:
             # f.close()
     return product
 
-async def get_model_data(page, id: int, link: str):
+async def get_model_data(page, id: str, link: str):
     # link ='https://store.truecorp.co.th/online-store/item/L91765936?ln=th'
-    # print()
+    # print(link)
 
     try:
         await page.goto(link)
@@ -208,21 +244,36 @@ async def get_model_data(page, id: int, link: str):
             bg = [('255', '255', '255')] if not bg else bg
             background_color.append(bg[0])
 
+        product = {
+            'provider': 'TRUE',
+            'brand_id': id,
+            'name': product_name,
+            'link' : link,
+            'img': product_image,
+        }
+
+        response = requests.post('http://127.0.0.1:8000/model', json = product)
+        response = response._content.decode('utf-8')
+        response = ast.literal_eval(response)
+        # print(response)
+
         rams = re.findall(RAM_LIST, detail_container)
         ram_list = rams if len(rams) > 0 else ["page"]
 
+        await get_promotions(page, response['_id'], ram_list)
+
         # print(color_name, background_color, ram_list)
 
-        product = {
-            'id': id,
-            'model': product_name,
-            'link' : link,
-            'pictures': product_image,
-            'color_name' : color_name,
-            'color_style' : background_color,
-            'rams' : ram_list,
-            'promotions' : await get_promotions(page, product_name, ram_list),
-        }
+        # product = {
+        #     'id': id,
+        #     'model': product_name,
+        #     'link' : link,
+        #     'pictures': product_image,
+        #     'color_name' : color_name,
+        #     'color_style' : background_color,
+        #     'rams' : ram_list,
+        #     'promotions' : await get_promotions(page, product_name, ram_list),
+        # }
 
         # json_string = json.dumps(product, indent=4, ensure_ascii=False).encode('utf8')
 
@@ -238,12 +289,13 @@ async def get_model_data(page, id: int, link: str):
 
     return None
 
-async def get_model_iterator(page, links: list[str]):
+async def get_model_iterator(page, brand: dict):
     models = list()
-    for id, link in enumerate(links):
-        model = await get_model_data(page, id, link)
+    for id, link in enumerate(brand['true']):
+        model = await get_model_data(page, brand['_id'], link)
         if model is not None:
             models.append(model)
+        break
     return models
 
 async def get_data(page, brands: list[str]):
@@ -251,16 +303,18 @@ async def get_data(page, brands: list[str]):
     datas = dict()
     for brand in brands:
         # print(brand)
-        links = get_links_by_brand(brand)
+        links = brand['true']
         # data = await get_model_iterator(page, links)
-        datas[brand] = await get_model_iterator(page, links)
-        print()
+        datas[brand['name']] = await get_model_iterator(page, brand)
+        break
     return datas
 
 async def main():
     
     print('START GET DATA')
     brands = get_brands()
+
+    # print(brands)
 
     browser = await launch(
         ignoreHTTPSErrors=True,
@@ -281,10 +335,10 @@ async def main():
 
     data = await get_data(page, brands)
 
-    json_string = json.dumps(data, indent=4, ensure_ascii=False).encode('utf8')
+    # json_string = json.dumps(data, indent=4, ensure_ascii=False).encode('utf8')
 
-    with open('data.json', 'w+', encoding='utf-8') as writefile:
-        writefile.write(json_string.decode())
+    # with open('data.json', 'w+', encoding='utf-8') as writefile:
+    #     writefile.write(json_string.decode())
 
     await browser.close()
 
