@@ -7,10 +7,6 @@ from bson import ObjectId
 from typing import Optional, List
 import motor.motor_asyncio
 from dotenv import dotenv_values
-from enum import Enum
-
-providers = ['AIS', 'DTAC', 'TRUE']
-TypeEnum = Enum("TypeEnum", providers)
 
 config = dotenv_values(".env")
 app = FastAPI()
@@ -69,10 +65,11 @@ class UpdateBrandModel(BaseModel):
 
 class ModelModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    provider: str = Field(...)
     brand_id: PyObjectId = Field(...)
     name: str = Field(...)
     link: str = Field(...)
+    color_name: Optional[list]
+    color_style: Optional[list]
     img: list = Field(...)
 
     class Config:
@@ -88,9 +85,27 @@ class ModelModel(BaseModel):
             }
         }
 
+class UpdateModelModel(BaseModel):
+    color_name: Optional[list]
+    color_style: Optional[list]
+
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+class ProviderModel(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    model_id: PyObjectId = Field(...)
+    provider: str = Field(...)
+
+    class Config:
+        allow_population_by_field_id = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
 class DetailModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    model_id: str = Field(...)
+    provider_id: PyObjectId = Field(...)
     ram: str = Field(...)
     normalprice: Optional[str]
     class Config:
@@ -108,7 +123,7 @@ class UpdateDetailModel(BaseModel):
 
 class PromotionModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    model_detail_id: str = Field(...)
+    model_detail_id: PyObjectId = Field(...)
     name: str = Field(...)
     detail: str = Field(...)
 
@@ -120,11 +135,12 @@ class PromotionModel(BaseModel):
 class PackageModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     package_no: str = Field(...)
-    promotion_id: str = Field(...)
+    promotion_id: PyObjectId = Field(...)
     specialprice: str = Field(...)
     prepaid: str = Field(...)
     package: str = Field(...)
     package_type: str = Field(...)
+    package_detail: Optional[str]
 
     class Config:
         allow_population_by_field_id = True
@@ -141,12 +157,16 @@ async def creat_brand(brand: BrandModel = Body(...)):
     create_brand = await db["brands"].find_one({"_id": new_brand.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=create_brand)
 
-@app.get(
-    "/brands", response_description="List all brands", response_model=List[BrandModel]
-)
+@app.get("/brands", response_description="List all brands", response_model=List[BrandModel])
 async def list_brands():
     brands = await db["brands"].find().to_list(1000)
     return brands
+
+@app.get("/brand/{id}", response_description="Get brand", response_model=BrandModel)
+async def get_brand(id: str):
+    brand = await db["brands"].find_one({'_id': id})
+    return brand
+
 
 @app.put("/brand/{id}", response_description="Update a brand", response_model=BrandModel)
 async def update_brand(id: str, brand: UpdateBrandModel = Body(...)):
@@ -176,9 +196,37 @@ async def create_model(model: ModelModel = Body(...)):
     create_model = await db["models"].find_one({"_id": new_model.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=create_model)
 
+@app.put("/model/{id}", response_description="Update a model", response_model=ModelModel)
+async def update_model(id: str, model: UpdateModelModel = Body(...)):
+    model = {k: v for k, v in model.dict().items() if v is not None}
+
+    if len(model) >= 1:
+        update_result = await db["models"].update_one({"_id": id}, {"$set": model})
+
+        if update_result.modified_count == 1:
+            if (
+                update_model := await db["models"].find_one({"_id": id})
+            ) is not None:
+                return update_model
+
+    if (existing_model := await db["models"].find_one({"_id": id})) is not None:
+        return existing_model
+
+    raise HTTPException(status_code=404, detail=f"Brand {id} not found")
+
+@app.post("/provider", response_description="Add new provider", response_model=ProviderModel)
+async def create_provider(provider: ProviderModel = Body(...)):
+    if (get_provider := await db["providers"].find_one({"model_id": provider.model_id, 'provider': provider.provider})) is not None:
+        return JSONResponse(status_code=status.HTTP_409_CONFLICT, content=get_provider)
+    
+    provider = jsonable_encoder(provider)
+    new_provider = await db["providers"].insert_one(provider)
+    create_provider = await db["providers"].find_one({"_id": new_provider.inserted_id})
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content=create_provider)
+
 @app.post("/detail", response_description="Add new model detail", response_model=DetailModel)
 async def create_detail(detail: DetailModel = Body(...)):
-    if (get_detail := await db["details"].find_one({"model_id": detail.model_id, 'ram': detail.ram})) is not None:
+    if (get_detail := await db["details"].find_one({"provider_id": detail.provider_id, 'ram': detail.ram})) is not None:
         return JSONResponse(status_code=status.HTTP_409_CONFLICT, content=get_detail)
     
     detail = jsonable_encoder(detail)
