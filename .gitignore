@@ -1,3 +1,4 @@
 /regex/True/true.py
 *.DS_Store
+*AIS_APPLE.txt
 *.yml
