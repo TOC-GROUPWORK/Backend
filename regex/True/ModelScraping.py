@@ -191,7 +191,6 @@ async def get_model_data(page, id: str, link: str):
         product = {
             'brand_id': id,
             'name': product_name,
-            'link' : link,
             'color_name' : color_name,
             'color_style' : background_color,
             'img': product_image,
@@ -204,6 +203,7 @@ async def get_model_data(page, id: str, link: str):
 
         provider_data = {
             'model_id': response['_id'],
+            'link' : link,
             'provider': 'TRUE'
         }
 

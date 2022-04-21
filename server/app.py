@@ -67,7 +67,9 @@ class ModelModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     brand_id: PyObjectId = Field(...)
     name: str = Field(...)
-    link: str = Field(...)
+    link_true: Optional[str]
+    link_ais: Optional[str]
+    link_dtac: Optional[str]
     color_name: Optional[list]
     color_style: Optional[list]
     img: list = Field(...)
@@ -86,8 +88,9 @@ class ModelModel(BaseModel):
         }
 
 class UpdateModelModel(BaseModel):
-    color_name: Optional[list]
-    color_style: Optional[list]
+    link_true: Optional[str]
+    link_ais: Optional[str]
+    link_dtac: Optional[str]
 
     class Config:
         arbitrary_types_allowed = True
@@ -186,6 +189,11 @@ async def update_brand(id: str, brand: UpdateBrandModel = Body(...)):
 
     raise HTTPException(status_code=404, detail=f"Brand {id} not found")
 
+@app.get("/models", response_description="List all models", response_model=List[ModelModel])
+async def list_models():
+    brands = await db["models"].find().to_list(1000)
+    return brands
+
 @app.post("/model", response_description="Add new model", response_model=ModelModel)
 async def create_model(model: ModelModel = Body(...)):
     if (get_model := await db["models"].find_one({"name": model.name})) is not None:
@@ -209,6 +217,7 @@ async def update_model(id: str, model: UpdateModelModel = Body(...)):
             ) is not None:
                 return update_model
 
+    # db["models"].update_many({"_id": id}, {"$unset": { 'link': "" }})
     if (existing_model := await db["models"].find_one({"_id": id})) is not None:
         return existing_model
 
