@@ -28,6 +28,25 @@ class PyObjectId(ObjectId):
     def __modify_schema__(cls, field_schema):
         field_schema.update(type="string")
 
+class GetBrandModel(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    name: str = Field(...)
+    img: str = Field(...)
+    models_list: list = Field(...)
+
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+class GetAllBrandsModel(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    name: str = Field(...)
+    img: str = Field(...)
+
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
 class BrandModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     name: str = Field(...)
@@ -48,6 +67,7 @@ class BrandModel(BaseModel):
         }
 
 class UpdateBrandModel(BaseModel):
+    img: Optional[str]
     ais: Optional[list]
     dtac: Optional[list]
     true: Optional[list]
@@ -150,6 +170,17 @@ class PackageModel(BaseModel):
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
 
+@app.get("/brands", response_description="List all brands", response_model=List[GetAllBrandsModel])
+async def list_brands():
+    brands = await db["brands"].find().to_list(1000)
+    return brands
+
+@app.get("/brand/{id}", response_description="Get brand", response_model=GetBrandModel)
+async def get_brand(id: str):
+    brand = await db["brands"].find_one({'_id': id})
+    brand['models_list'] = brand.get('models_list', await db["models"].find({'brand_id': id}, {'_id': 1, 'name': 1, 'img': 1}).to_list(1000))
+    return brand
+
 @app.post("/brand", response_description="Add new brand", response_model=BrandModel)
 async def creat_brand(brand: BrandModel = Body(...)):
     if (get_brand := await db["brands"].find_one({"name": brand.name})) is not None:
@@ -160,15 +191,10 @@ async def creat_brand(brand: BrandModel = Body(...)):
     create_brand = await db["brands"].find_one({"_id": new_brand.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=create_brand)
 
-@app.get("/brands", response_description="List all brands", response_model=List[BrandModel])
-async def list_brands():
-    brands = await db["brands"].find().to_list(1000)
-    return brands
-
-@app.get("/brand/{id}", response_description="Get brand", response_model=BrandModel)
-async def get_brand(id: str):
-    brand = await db["brands"].find_one({'_id': id})
-    return brand
+# @app.get("/brand/{id}", response_description="Get brand", response_model=BrandModel)
+# async def get_brand(id: str):
+#     brand = await db["brands"].find_one({'_id': id})
+#     return brand
 
 
 @app.put("/brand/{id}", response_description="Update a brand", response_model=BrandModel)
@@ -191,8 +217,15 @@ async def update_brand(id: str, brand: UpdateBrandModel = Body(...)):
 
 @app.get("/models", response_description="List all models", response_model=List[ModelModel])
 async def list_models():
-    brands = await db["models"].find().to_list(1000)
-    return brands
+    models = await db["models"].find().to_list(1000)
+    return models
+
+# @app.get("/model/{id}", response_description="List all models", response_model=List[ModelModel])
+# async def get_model(id: str):
+#     model = await db["models"].find_one({"_id": id}
+#     for provider in db["providers"].fine({'model_id': id}):
+#         model[provider['provider']] 
+#     return brands
 
 @app.post("/model", response_description="Add new model", response_model=ModelModel)
 async def create_model(model: ModelModel = Body(...)):
