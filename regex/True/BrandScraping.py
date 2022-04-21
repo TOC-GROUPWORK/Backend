@@ -1,4 +1,5 @@
 import re
+import ast
 import requests
 import asyncio
 from pyppeteer import launch
@@ -36,22 +37,26 @@ def get_brands(main_url: str) -> list[str]:
           brand_name = re.findall(BRAND_NAME, span)[0]
           # name_text = re.findall(NAME_TEXT, brand_name)[0]
 
-          # print(brand_name)
-          brands.append(brand_name)
+          data = { 'name': brand_name, }
+          response = requests.post('http://127.0.0.1:8000/brand', json = data)
+          response = response._content.decode('utf-8')
+          response = ast.literal_eval(response)
+          # print(repr(response))
+          brands.append(response)
 
-     f= open(f"files/brands.txt","w")
-     f.write('\n'.join(brands))
-     f.close()
+     # f= open(f"files/brands.txt","w")
+     # f.write('\n'.join(brands))
+     # f.close()
 
      return brands
 
 async def get_page_quantity(page, brand: str) -> int:
      print('\nGET MODELS AT ' + str.upper(brand) + ' brand!!!')
-     uri = 'https://truemoveh.truecorp.co.th/device?search_brand=' + brand
+     uri = 'https://truemoveh.truecorp.co.th/device?search_brand=' + brand + '&search_network=all&page=1'
      # print(uri)
 
      await page.goto(uri)
-     await page.waitFor(500)
+     await page.waitFor(1000)
      # GET BODY HTML
      page_body = await page.evaluate('() => document.getElementsByTagName("BODY")[0].innerHTML')
 
@@ -78,8 +83,11 @@ async def get_models_at_page(page, brand: str, page_no: int) -> list[str]:
 
      # page = requests.get(uri)
      # page.encoding = 'utf8'
-     await page.goto(uri)
-     await page.waitFor(500)
+     try:
+          await page.goto(uri)
+          await page.waitFor(2000)
+     except:
+          return []
 
      # GET BODY HTML
      page_body = await page.evaluate('() => document.getElementsByTagName("BODY")[0].innerHTML')
@@ -107,16 +115,28 @@ async def get_models_at_page(page, brand: str, page_no: int) -> list[str]:
      print()
      return links
 
-async def get_models(page, brand: str, page_quantity: int):
+async def get_models(page, brand: str, id: str, page_quantity: int):
 
      print('GET ALL MODELS')
+
      model_links = []
      for page_no in range(page_quantity):
           model_links += await get_models_at_page(page, brand, page_no + 1)
+     if len(model_links) == 0:
+          return
+     # f = open(f'files/{brand}.txt', 'r')
+     # for link in f:
+     #      model_links.append(link.split('\n')[0])
+     # f.close()
 
-     f= open(f"files/{brand}.txt","w")
-     f.write('\n'.join(model_links))
-     f.close()
+     data = { 'true': model_links }
+     response = requests.put('http://127.0.0.1:8000/brand/' + id, json = data)
+     # response = response._content.decode('utf-8')
+     # response = ast.literal_eval(response)
+     # print(repr(response))
+     # f= open(f"files/{brand}.txt","w")
+     # f.write('\n'.join(model_links))
+     # f.close()
      return
 
 async def main():
@@ -130,8 +150,14 @@ async def main():
      await page.setViewport({'width': 1920, 'height': 1080})
 
      for brand in brands:
-          page_quantity: int = await get_page_quantity(page, brand)
-          await get_models(page, brand, page_quantity)
+          # response = requests.get('http://127.0.0.1:8000/brand/' + brand['_id'])
+          # response = response._content.decode('utf-8')
+          # response = ast.literal_eval(response)
+          # if response['true'] != []:
+          #      continue
+          # print(response['true'])
+          page_quantity: int = await get_page_quantity(page, brand['name'])
+          await get_models(page, brand['name'], brand['_id'], page_quantity)
 
      await page.close()
 
