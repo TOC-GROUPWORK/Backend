@@ -170,6 +170,10 @@ class PackageModel(BaseModel):
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
 
+@app.get("/")
+async def get_app():
+    return { 'message': 'WongNok'}
+
 @app.get("/brands", response_description="List all brands", response_model=List[GetAllBrandsModel])
 async def list_brands():
     brands = await db["brands"].find().to_list(1000)
