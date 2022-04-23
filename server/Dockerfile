@@ -1,14 +1,10 @@
 FROM python:3.10
 
-WORKDIR /code
+WORKDIR /app
 
 COPY requirements.txt requirements.txt
 
-RUN pip uninstall bson
-RUN pip uninstall pymongo
-RUN pip install pymongo
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
-COPY . /code
-
+COPY . /app
 CMD ["uvicorn", "app:app"]
