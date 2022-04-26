@@ -1,4 +1,7 @@
+from distutils.log import error
+from email.charset import add_charset
 import re
+import string
 import requests
 
 print('Hello Dtac!!!')
@@ -6,13 +9,218 @@ DTAC_BASE = 'https://www.dtac.co.th/'
 
 txt = r'[^<>\n\t\s]+(?=[<])'
 
+'''
+model = {
+        'model' : model[0],
+        'size' : size[0],
+        'package' : [
+            {
+                'contact' : contact,
+                'detail' : detail,
+                'promotions' : {
+                    'package_price': price[0],
+                    'advance_fee': price[1], 
+                    'dtac_price': price[2],
+                    'gold_price': price[3], 
+                    'platinum_price': price[4],
+                    },
+            }
+        ]
+    }
+'''
+
+def get_page(path):
+    # txt_raw = r'class="table-responsive">((.|\n)*?)<\/table>((.|\n)*?)<\/table>((.|\n)*?)<\/table>'
+    txt_raw = r'class="table-responsive">((.|\n)*?)<\/table>'
+    fullpath = DTAC_BASE + path
+    page = requests.get(fullpath)
+    page.encoding = 'utf-8'
+    return re.findall(txt_raw, page.text)
+
+def price_order(price, pattern = 'default'):
+    '''
+    price : list, pattern :str
+    'package_price' = 0
+    'advance_fee' = 1
+    'dtac_price' = 2,
+    'gold_price' = 3, 
+    'platinum_price' = 4, 
+    '''
+    if pattern == '0312':
+        return {
+            'package_price': price[0],
+            'advance_fee': price[3], 
+            'dtac_price': price[1],
+            'gold_price': price[2], 
+            'platinum_price': price[2],
+        }
+    elif pattern == '01234':
+        return {
+            'package_price': price[0],
+            'advance_fee': price[1], 
+            'dtac_price': price[2],
+            'gold_price': price[3], 
+            'platinum_price': price[4],
+        }
+    elif pattern == '01':
+        return {
+            'package_price': price[0],
+            'advance_fee': None, 
+            'dtac_price': price[1],
+            'gold_price': None, 
+            'platinum_price': None,
+        }
+    elif pattern == 'default':
+        return {
+            'package_price': price[0],
+            'advance_fee': price[1], 
+            'dtac_price': price[2],
+            'gold_price': None, 
+            'platinum_price': None,
+        }
+
+def gets_model(path, pattern):
+    '''
+    parameter path
+    '''
+    txt_model = r'<div class="txt-th tH5 tH3 fDtacB">(.*)<\/div>'
+    txt_tbody = r'<tbody class="table-package">((.|\n)*?)<\/tbody>'
+    txt_tr = r'<tr>((.|\n)*?)<\/tr>'
+    txt_detail = r'<div class="txt-th cWhite"((.|\n)*?)\/div>'
+    txt_det = r'[^<>\n\t]+(?=[<\n])'
+    txt_size = r'[0-9]+[G|T]B'
+    txt_contact = r'\(.*\)'
+
+    # iphone13pro = '/iphone-13-pro'
+    # iphone13 = '/iphone-13'
+    iphone12 = '/iphone-12.html' 
+    iphonese = '/iphone-se.html' 
+    # iphone11 = '/iphone-11.html' 
+    iphonexr = '/iphone-xr.html'
+    '''
+    txt_raw = r'class="table-responsive">((.|\n)*?)<\/table>'
+    txt_model = r'<div class="txt-th txt-h-2 -bold">(.*)</div>'
+    txt_tbody = r'<tbody class="table-package">((.|\n)*?)<\/tbody>'
+    txt_tr = r'<tr>((.|\n)*?)<\/tr>'
+    txt_detail = r'<div class="txt-th cWhite"((.|\n)*?)\/div>'
+    txt_det = r'[^<>\n\t]+(?=[<\n])'
+    txt_size = r'[0-9]+[G|T]B'
+    txt_contact = r'\(.*\)'
+
+    same
+    '''
+
+    raw_data = get_page(path=path)
+    # print(len(raw_data))
+    # print(raw_data[1])
+    ls_json = []
+    for data in raw_data:
+        model = None
+        size = None
+        detail = None
+        contact = None
+        promotions = []
+        # Get model name
+        model = re.findall(txt_model, data[0])
+        # print('model = ', model)
+        if model == []:
+            model = re.findall(r'<div class="txt-th txt-h-2 -bold">(.*)<\/div>', data[0])
+        if model != []:
+            size = re.findall(txt_size, model[0])
+            # print(size)
+        
+        det = re.findall(txt_detail, data[0])
+        if det == []:
+            det = re.findall(r'<div class="txt-th -c-white">((.|\n)*?)<\/div>', data[0])
+        # print('det = ', det)
+        if det != []:
+            deta = re.findall(txt_det, det[0][0])
+            if deta == []:
+                deta = det[0][0]
+            # print(deta)
+            detail = ''
+            for i in deta:
+                detail += str(i.strip())
+            # print('detail = ',detail)
+            contact = re.findall(txt_contact, detail)
+            if contact is None or contact == []:
+                contact = '(สัญญา 24 เดือน)'
+            # print(contact)
+        tbody = re.findall(txt_tbody, data[0])
+        # print(tbody)
+        # print('tbody = ', len(tbody[0]))
+        tr = re.findall(txt_tr, tbody[0][0])
+        # print('tr = ',tr, len(tr))
+        def price_order(path, price):
+            if path == iphone12:
+                return {
+                    'package_price': price[0],
+                    'advance_fee': price[3], 
+                    'dtac_price': price[1],
+                    'gold_price': price[2], 
+                    'platinum_price': price[2],
+                }
+            elif path == iphonese:
+                return {
+                    'package_price': price[0],
+                    'advance_fee': price[1], 
+                    'dtac_price': price[2],
+                    'gold_price': price[3], 
+                    'platinum_price': price[4],
+                }
+            # elif path == iphone11:
+            #     return {
+            #         'package_price': price[0],
+            #         'advance_fee': price[1], 
+            #         'dtac_price': price[2],
+            #         'gold_price': None, 
+            #         'platinum_price': None,
+            #     }
+            elif path == iphonexr:
+                return {
+                    'package_price': price[0],
+                    'advance_fee': None, 
+                    'dtac_price': price[1],
+                    'gold_price': None, 
+                    'platinum_price': None,
+                }
+            else:
+                return {
+                    'package_price': price[0],
+                    'advance_fee': price[1], 
+                    'dtac_price': price[2],
+                    'gold_price': None, 
+                    'platinum_price': None,
+                }
+            
+        for td in tr:
+            price = re.findall(txt, td[0])
+            promotions.append(price_order(path=path, price=price))
+            # print(promotions, len(promotions))
+
+        ls_json.append({
+            'model' : model[0],
+            'size' : size[0],
+            'package' : [
+                {
+                    'contact' : contact,
+                    'detail' : ''.join(detail),
+                    'promotions' : promotions,
+                }
+            ]
+        })
+        # if path == iphonexr:
+        #     break
+        print(ls_json)
+    return ls_json
+
 def get_model13(path):
     apple_base = DTAC_BASE + 'apple'
 
     page = requests.get(apple_base + path)
     page.encoding = 'utf-8'
-    if page:
-        print('Get page!!!')
+    # if page:
+    #     print('Get page!!!')
 
     txt_raw = r'class="table-responsive">((.|\n)*?)<\/table>((.|\n)*?)<\/table>((.|\n)*?)<\/table>'
     txt_model = r'<div class="txt-th tH5 tH3 fDtacB">(.*)<\/div>'
@@ -71,17 +279,17 @@ def get_model13(path):
             'package' : [
                 {
                     'contact' : contact,
-                    'detail' : detail,
+                    'detail' : ''.join(detail),
                     'promotions' : price_list,
                 }
             ]
         }
 
     raw_data = re.findall(txt_raw, page.text)
-    print('len raw_data = ', len(raw_data))
+    # print('len raw_data = ', len(raw_data))
 
     # data in 0, 2, 4 
-    print('len raw_data[0] = ', len(raw_data[0]))
+    # print('len raw_data[0] = ', len(raw_data[0]))
     # print(raw_data[0][2])
 
     ls_json = []
@@ -124,14 +332,14 @@ def get_model13(path):
         # print(js['package'], len(js['package']))
         js['package'] += [{
             'contact' : contact,
-            'detail' : detail,
+            'detail' : ''.join(detail),
             'promotions' : price_list,
         }]
         # print(js['package'], len(js['package']))
 
         ls_json.append(js)
         
-    print(ls_json, len(ls_json))
+    # print(ls_json, len(ls_json))
 
     return ls_json
 
@@ -148,14 +356,14 @@ def get_model12(path):
     apple_base = DTAC_BASE + 'apple'
     page = requests.get(apple_base + path)
     page.encoding = 'utf-8'
-    if page:
-        print('Get page!!!')
+    # if page:
+    #     print('Get page!!!')
 
     raw_data = re.findall(txt_raw, page.text)
-    print('len raw_data = ', len(raw_data)) # len = 8
+    # print('len raw_data = ', len(raw_data)) # len = 8
     # print(raw_data[0])
     # data in 0
-    print('len raw_data[0] = ', len(raw_data[0]))
+    # print('len raw_data[0] = ', len(raw_data[0]))
     # print(raw_data[0][0])
     # for i in raw_data[0]:
     #     print('---->>>>>')
@@ -169,10 +377,10 @@ def get_model12(path):
         contact = None
         promotions = []
         model = re.findall(txt_model, data[0])
-        print('model = ',model)
+        # print('model = ',model)
         if model != []:
             size = re.findall(txt_size, model[0])
-            print(size)
+            # print(size)
         
         det = re.findall(txt_detail, data[0])
         if det == []:
@@ -216,7 +424,7 @@ def get_model12(path):
             'package' : [
                 {
                     'contact' : contact,
-                    'detail' : detail,
+                    'detail' : ''.join(detail),
                     'promotions' : promotions,
                 }
             ]
@@ -246,8 +454,8 @@ def get_modelse(path):
     apple_base = DTAC_BASE + 'apple'
     page = requests.get(apple_base + path)
     page.encoding = 'utf-8'
-    if page:
-        print('Get page!!!')
+    # if page:
+    #     print('Get page!!!')
 
     raw_data = re.findall(txt_raw, page.text)
     # print('len raw_data = ', len(raw_data)) # len = 8
@@ -267,7 +475,7 @@ def get_modelse(path):
         # print('model = ',model)
         if model != []:
             size = re.findall(txt_size, model[0])
-            print(size)
+            # print(size)
         
         det = re.findall(txt_detail, data[0])
         if det == []:
@@ -309,7 +517,7 @@ def get_modelse(path):
             'package' : [
                 {
                     'contact' : contact,
-                    'detail' : detail,
+                    'detail' : ''.join(detail),
                     'promotions' : promotions,
                 }
             ]
@@ -332,8 +540,8 @@ def get_model11(path):
     apple_base = DTAC_BASE + 'apple'
     page = requests.get(apple_base + path)
     page.encoding = 'utf-8'
-    if page:
-        print('Get page!!!')
+    # if page:
+    #     print('Get page!!!')
 
     raw_data = re.findall(txt_raw, page.text)
     # print('len raw_data = ', len(raw_data)) # len = 8
@@ -353,7 +561,7 @@ def get_model11(path):
         # print('model = ',model)
         if model != []:
             size = re.findall(txt_size, model[0])
-            print(size)
+            # print(size)
         
         det = re.findall(txt_detail, data[0])
         if det == []:
@@ -396,7 +604,7 @@ def get_model11(path):
             'package' : [
                 {
                     'contact' : contact,
-                    'detail' : detail,
+                    'detail' : ''.join(detail),
                     'promotions' : promotions,
                 }
             ]
@@ -419,8 +627,8 @@ def get_modelxr(path):
     apple_base = DTAC_BASE + 'apple'
     page = requests.get(apple_base + path)
     page.encoding = 'utf-8'
-    if page:
-        print('Get page!!!')
+    # if page:
+    #     print('Get page!!!')
 
     raw_data = re.findall(txt_raw, page.text)
     # print(raw_data)
@@ -484,7 +692,7 @@ def get_modelxr(path):
             'package' : [
                 {
                     'contact' : contact,
-                    'detail' : detail,
+                    'detail' : ''.join(detail),
                     'promotions' : promotions,
                 }
             ]
@@ -495,7 +703,16 @@ def get_modelxr(path):
     
     return ls_json
 
-def apple(order):
+def apple(order='all'):
+    '''
+    all = getall
+    iphone13pro = '/iphone-13-pro'
+    iphone13 = '/iphone-13'
+    iphone12 = '/iphone-12.html'
+    iphonese = '/iphone-se.html'
+    iphone11 = '/iphone-11.html'
+    iphonexr = '/iphone-xr.html'
+    '''
     iphone13pro = '/iphone-13-pro'
     iphone13 = '/iphone-13'
     iphone12 = '/iphone-12.html'
@@ -527,7 +744,7 @@ def apple(order):
 
 # apple('all')
 
-def samsung(order):
+def samsung(order='all'):
     s22 = 'samsung-galaxy-s22'
     s21 = 'samsung-galaxy-s21-fe'
     z = 'galaxy-z'
@@ -545,7 +762,7 @@ def samsung(order):
         # s22 and z
         page = requests.get(DTAC_BASE + 'samsung/' + path)
         page.encoding = 'utf-8'
-        print('Get page!!!') if page else print('Dont get page!!!')
+        # print('Get page!!!') if page else print('Dont get page!!!')
 
         raw_data = re.findall(txt_raw, page.text)
         # print(raw_data)
@@ -626,7 +843,7 @@ def samsung(order):
     def get_model21():
         page = requests.get(DTAC_BASE + 'samsung/' + s21)
         page.encoding = 'utf-8'
-        print('Get page!!!') if page else print('Dont get page!!!')
+        # print('Get page!!!') if page else print('Dont get page!!!')
 
         raw_data = re.findall(txt_raw, page.text)
         # print(raw_data)
@@ -697,7 +914,7 @@ def samsung(order):
             })
 
         
-        print(ls_json, len(ls_json))
+        # print(ls_json, len(ls_json))
         
         return ls_json
     
@@ -718,11 +935,15 @@ def samsung(order):
 # samsung()
 
 def scraping(brand):
+    '''
+    
+    '''
     txt_product = r'<div class="item-mobile product"((.|\n)*?)<ul class="txt-body-s">((.|\n)*?)<\/div>'
     txt_sprice = r'data-price="(.*)" '
     txt_name = r'data-name="(.*)"'
     txt_price = r'<u>(.*)?<\/u>'
     txt_detail = r'<li>(.*)?<\/li>'
+    txt_size = r'[0-9]+[G|T]B'
     
     page = requests.get(DTAC_BASE + '/' + brand + '/')
     page.encoding = 'utf-8'
@@ -737,26 +958,86 @@ def scraping(brand):
     for product in card:
         data = product[0]
         sprice = re.findall(txt_sprice, data)
+        dtac_price = sprice[0]
         name = re.findall(txt_name, data)
-        price = re.findall(txt_price, data)
+        # price = re.findall(txt_price, data)
         detail = re.findall(txt_detail, data)
-        detail += re.findall(txt, product[2])
+        advance_fee = None
+        package_price = None
+        print(detail)
+        if len(detail) == 2:
+            '''
+            ค่าบริการล่วงหน้า 4,000.-
+            แพ็กเกจเริ่มต้น 1499
+            '''
+            advance_fee = re.findall('[0-9],[0-9]+', detail[0])
+            if advance_fee == [] or advance_fee == None:
+                advance_fee = None
+            else:
+                advance_fee = advance_fee[0]
+            package_price = re.findall('[0-9]+', detail[1])
+            if package_price == [] or package_price == None:
+                package_price = None
+            else:
+                package_price = package_price[0]
+            
+            detail = ''.join(detail)
+        elif len(detail) == 1:
+            detail = detail[0]
 
-        # print(data)
-        # print(product[2])
-
-        # print(sprice)
-        # print(name)
-        # print(price)
-        # print(detail)
+        detail2 = re.findall(txt, product[2])
+        if len(detail2) == 0:
+            detail2 = None
+        elif len(detail2) == 2:
+            detail2 = ''.join(detail2)
+        else:
+            print('Error at detail2.')
+        size = re.findall(txt_size, name[0])
+        if size == []:
+            size = None
+        print(name)
+        print(size)
+        '''
+        model(apple, samsung) = {
+            'model' : model[0],
+            'size' : size[0],
+            'package' : [
+                {
+                    'contact' : contact,
+                    'detail' : detail,
+                    'promotions' : {
+                    'package_price': price[0],
+                    'advance_fee': price[1], 
+                    'dtac_price': price[2],
+                    'gold_price': price[3], 
+                    'platinum_price': price[4],
+                    },
+                }
+            ]
+        }
+        '''
         data_json = {
             'model': name[0],
-            'specialprice': sprice[0],
-            'normalprice': price[0],
-            'detail': detail,
+            'size' : size,
+            # 'specialprice': sprice[0],
+            # 'normalprice': price[0],
+            # 'detail': detail,
+            'package': [
+                {
+                    'contact' : None,
+                    'detail' : detail,
+                    'promotions' : {
+                    'package_price': package_price,
+                    'advance_fee': advance_fee, 
+                    'dtac_price': dtac_price,
+                    'gold_price': None, 
+                    'platinum_price': None,
+                    }
+                }
+            ]
         }
 
-        print(data_json)
+        # print(data_json)
         ls_json.append(data_json)
     
     return ls_json
