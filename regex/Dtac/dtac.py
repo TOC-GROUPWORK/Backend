@@ -8,6 +8,7 @@ print('Hello Dtac!!!')
 DTAC_BASE = 'https://www.dtac.co.th/'
 
 txt = r'[^<>\n\t\s]+(?=[<])'
+txtmodel = r'([\w ]+) '
 
 '''
 model = {
@@ -203,7 +204,7 @@ def gets_model(path, pattern):
             'size' : size[0],
             'package' : [
                 {
-                    'contact' : contact,
+                    'contact' : contact[0],
                     'detail' : ''.join(detail),
                     'promotions' : promotions,
                 }
@@ -262,23 +263,39 @@ def get_model13(path):
         for td in tr:
             price = re.findall(txt, td[0])
             # print('price = ', price)
-            price_list.append({
-                'package_price': price[0],
-                'advance_fee':price[1], 
-                'dtac_price': price[2],
-                'gold_price': price[3], 
-                'platinum_price': price[4],
-                # 'contact' : contact,
-                # 'detail' : detail,
-                })
+            if len(price) == 5:
+                price_list.append({
+                    'package_price': price[0],
+                    'advance_fee': price[1], 
+                    'dtac_price': price[2],
+                    'gold_price': price[3], 
+                    'platinum_price': price[4],
+                    })
+            elif len(price) == 4:
+                price_list.append({
+                    'package_price': price[0],
+                    'advance_fee': None, 
+                    'dtac_price': price[1],
+                    'gold_price': price[2], 
+                    'platinum_price': price[3],
+                    })
+            elif len(price) == 3:
+                price_list.append({
+                    'package_price': price[0],
+                    'advance_fee': price[2], 
+                    'dtac_price': price[1],
+                    'gold_price': None, 
+                    'platinum_price': None,
+                    })
             # print(price_list, len(price_list))
-        
+
+        model = re.findall(txtmodel, model[0])
         return {
             'model' : model,
             'size' : size,
             'package' : [
                 {
-                    'contact' : contact,
+                    'contact' : ''.join(contact),
                     'detail' : ''.join(detail),
                     'promotions' : price_list,
                 }
@@ -310,7 +327,7 @@ def get_model13(path):
                 detail += str(i.strip())
             # print(detail)
             contact = re.findall(txt_contact, detail)
-            # print(contact)
+            print(contact)
         tbody = re.findall(txt_tbody, data[2])
         # print(tbody)
         # print(len(tbody[0]))
@@ -318,20 +335,36 @@ def get_model13(path):
         # print(tr, len(tr))
         for td in tr:
             price = re.findall(txt, td[0])
-            price_list.append({
-                'package_price': price[0],
-                'advance_fee': None, 
-                'dtac_price': price[1],
-                'gold_price': price[2], 
-                'platinum_price': price[3],
-                # 'contact' : contact,
-                # 'detail' : detail,
-                })
+            # print(price)
+            if len(price) == 5:
+                price_list.append({
+                    'package_price': price[0],
+                    'advance_fee': price[1], 
+                    'dtac_price': price[2],
+                    'gold_price': price[3], 
+                    'platinum_price': price[4],
+                    })
+            elif len(price) == 4:
+                price_list.append({
+                    'package_price': price[0],
+                    'advance_fee': None, 
+                    'dtac_price': price[1],
+                    'gold_price': price[2], 
+                    'platinum_price': price[3],
+                    })
+            elif len(price) == 3:
+                price_list.append({
+                    'package_price': price[0],
+                    'advance_fee': price[2], 
+                    'dtac_price': price[1],
+                    'gold_price': None, 
+                    'platinum_price': None,
+                    })
             # print(price_list, len(price_list))
         
         # print(js['package'], len(js['package']))
         js['package'] += [{
-            'contact' : contact,
+            'contact' : ''.join(contact),
             'detail' : ''.join(detail),
             'promotions' : price_list,
         }]
@@ -397,7 +430,7 @@ def get_model12(path):
             # print('detail = ',detail)
             contact = re.findall(txt_contact, detail)
             if contact is None or contact == []:
-                contact = '(สัญญา 24 เดือน)'
+                contact = ['(สัญญา 24 เดือน)']
             # print(contact)
         
         tbody = re.findall(txt_tbody, data[0])
@@ -418,12 +451,13 @@ def get_model12(path):
                 })
             print(promotions, len(promotions))
 
+        model = re.findall(txtmodel, model[0])
         ls_json.append({
-            'model' : model[0],
+            'model' : model,
             'size' : size[0],
             'package' : [
                 {
-                    'contact' : contact,
+                    'contact' : contact[0],
                     'detail' : ''.join(detail),
                     'promotions' : promotions,
                 }
@@ -510,9 +544,10 @@ def get_modelse(path):
                 'platinum_price': price[4],
                 })
             # print(promotions, len(promotions))
-
+        
+        model = re.findall(txtmodel, model[0])
         ls_json.append({
-            'model' : model[0],
+            'model' : model,
             'size' : size[0],
             'package' : [
                 {
@@ -578,7 +613,7 @@ def get_model11(path):
             # print('detail = ',detail)
             contact = re.findall(txt_contact, detail)
             if contact is None or contact == []:
-                contact = '(สัญญา 24 เดือน)'
+                contact = ['(สัญญา 24 เดือน)']
             # print(contact)
         
         tbody = re.findall(txt_tbody, data[0])
@@ -598,12 +633,13 @@ def get_model11(path):
                 })
             # print(promotions, len(promotions))
 
+        model = re.findall(txtmodel, model[0])
         ls_json.append({
-            'model' : model[0],
+            'model' : model,
             'size' : size[0],
             'package' : [
                 {
-                    'contact' : contact,
+                    'contact' : contact[0],
                     'detail' : ''.join(detail),
                     'promotions' : promotions,
                 }
@@ -666,7 +702,7 @@ def get_modelxr(path):
             # print('detail = ',detail)
             contact = re.findall(txt_contact, detail)
             if contact is None or contact == []:
-                contact = '(สัญญา 24 เดือน)'
+                contact = ['(สัญญา 24 เดือน)']
             # print(contact)
         
         tbody = re.findall(txt_tbody, data[0])
@@ -686,12 +722,13 @@ def get_modelxr(path):
                 })
             # print(promotions, len(promotions))
 
+        model = re.findall(txtmodel, model[0])
         ls_json.append({
-            'model' : model[0],
+            'model' : model,
             'size' : size[0],
             'package' : [
                 {
-                    'contact' : contact,
+                    'contact' : contact[0],
                     'detail' : ''.join(detail),
                     'promotions' : promotions,
                 }
@@ -755,7 +792,8 @@ def samsung(order='all'):
     txt_tr = r'<tr>((.|\n)*?)<\/tr>'
     txt_detail = r'<div class="txt-th cWhite"((.|\n)*?)\/div>'
     txt_det = r'[^<>\n\t]+(?=[<\n])'
-    txt_size = r'[0-9]+[G|T]B'
+    txt_size = r'[0-9]+[G|T]B' 
+    #  ([\w ]+) 
     txt_contact = r'\(.*\)'
 
     def get_model22(path):
@@ -800,8 +838,6 @@ def samsung(order='all'):
                     detail += str(i.strip())
                 # print('detail = ',detail)
                 contact = re.findall(txt_contact, detail)
-                if contact is None or contact == []:
-                    contact = '(สัญญา 24 เดือน)'
                 # print(contact)
             tbody = re.findall(txt_tbody, data[0])
             # print('tbody = ', tbody)
@@ -820,12 +856,16 @@ def samsung(order='all'):
                     })
                 # print(promotions, len(promotions))
 
+            model = re.findall(txtmodel, model[0])
+            if contact is None or contact == []:
+                    contact = ['(สัญญา 24 เดือน)']
+            print(contact)
             ls_json.append({
-                'model' : model[0],
+                'model' : model,
                 'size' : size[0],
                 'package' : [
                     {
-                        'contact' : contact,
+                        'contact' : contact[0],
                         'detail' : detail,
                         'promotions' : promotions,
                     }
@@ -882,7 +922,7 @@ def samsung(order='all'):
                 # print('detail = ',detail)
                 contact = re.findall(txt_contact, detail)
                 if contact is None or contact == []:
-                    contact = '(สัญญา 24 เดือน)'
+                    contact = ['(สัญญา 24 เดือน)']
                 # print(contact)
             tbody = re.findall(txt_tbody, data[0])
             # print('tbody = ', tbody)
@@ -901,12 +941,13 @@ def samsung(order='all'):
                     })
                 # print(promotions, len(promotions))
 
+            model = re.findall(txtmodel, model[0])
             ls_json.append({
-                'model' : model[0],
+                'model' : model,
                 'size' : size[0],
                 'package' : [
                     {
-                        'contact' : contact,
+                        'contact' : contact[0],
                         'detail' : detail,
                         'promotions' : promotions,
                     }

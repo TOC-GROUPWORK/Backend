@@ -14,10 +14,11 @@ samsung = 'samsung/'
 s22 = 'samsung-galaxy-s22'
 s21 = 'samsung-galaxy-s21-fe'
 z = 'galaxy-z'
-data = dtac.gets_model(apple + iphonexr)
-# with open('test.json', 'w', encoding='utf-8') as writefile:
-#     json.dump(s, writefile, ensure_ascii=False)
-# print('Done writing .json')
+
+data = dtac.samsung()
+with open('test.json', 'w', encoding='utf-8') as writefile:
+    json.dump(data, writefile, ensure_ascii=False)
+print('Done writing .json')
 
 def get_brands() -> list[str]:
     print('GET ALL BRANDS!!')
@@ -27,12 +28,13 @@ def get_brands() -> list[str]:
 
     return response
 
-print('START GET DATA')
-brands = get_brands()
-with open('brands.json', 'w', encoding='utf-8') as writefile:
-    json.dump(brands, writefile, ensure_ascii=False)
-print('Done writing .json')
-print(brands)
+
+# print('START GET DATA')
+# brands = get_brands()
+# with open('brands.json', 'w', encoding='utf-8') as writefile:
+#     json.dump(brands, writefile, ensure_ascii=False)
+# print('Done writing .json')
+# print(brands)
 
 # product = {
 #             'brand_id': id,
