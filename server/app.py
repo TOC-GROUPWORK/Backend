@@ -110,6 +110,7 @@ class ModelSchema(BaseModel):
 class GetModelSchema(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     name: str = Field(...)
+    links: dict = Field(...)
     color_name: Optional[list]
     color_style: Optional[list]
     img: list = Field(...)
@@ -186,18 +187,18 @@ class PackageSchema(BaseModel):
 async def get_app():
     return { 'message': 'WongNok'}
 
-@app.get("/brands", response_description="List all brands", response_model=List[GetAllBrandsSchema])
+@app.get("/brands", tags=["Brands"], response_description="List all brands", response_model=List[GetAllBrandsSchema])
 async def list_brands():
     brands = await db["brands"].find().to_list(1000)
     return brands
 
-@app.get("/brand/{id}", response_description="Get brand", response_model=GetBrandSchema)
+@app.get("/brand/{id}", tags=["Brands"], response_description="Get brand", response_model=GetBrandSchema)
 async def get_brand(id: str):
     brand = await db["brands"].find_one({'_id': id})
     brand['models_list'] = brand.get('models_list', await db["models"].find({'brand_id': id}, {'_id': 1, 'name': 1, 'img': 1}).to_list(1000))
     return brand
 
-@app.post("/brand", response_description="Add new brand", response_model=BrandSchema)
+@app.post("/brand", tags=["Brands"], response_description="Add new brand", response_model=BrandSchema)
 async def creat_brand(brand: BrandSchema = Body(...)):
     if (get_brand := await db["brands"].find_one({"name": brand.name})) is not None:
         return JSONResponse(status_code=status.HTTP_409_CONFLICT, content=get_brand)
@@ -213,7 +214,7 @@ async def creat_brand(brand: BrandSchema = Body(...)):
 #     return brand
 
 
-@app.put("/brand/{id}", response_description="Update a brand", response_model=BrandSchema)
+@app.put("/brand/{id}", tags=["Brands"], response_description="Update a brand", response_model=BrandSchema)
 async def update_brand(id: str, brand: UpdateBrandSchema = Body(...)):
     brand = {k: v for k, v in brand.dict().items() if v is not None}
 
@@ -231,19 +232,22 @@ async def update_brand(id: str, brand: UpdateBrandSchema = Body(...)):
 
     raise HTTPException(status_code=404, detail=f"Brand {id} not found")
 
-@app.get("/models", response_description="List all models", response_model=List[ModelSchema])
+@app.get("/models", tags=["Models"], response_description="List all models", response_model=List[ModelSchema])
 async def list_models():
     models = await db["models"].find().to_list(1000)
     return models
 
-@app.get("/model/{id}", response_description="Get model", response_model=GetModelSchema)
-async def get_model(id: str):
-    model = await db["models"].find_one({"_id": id}, {'brand_id': 0})
-
+@app.get("/model/{model_id}", tags=["Models"], response_description="Get model", response_model=GetModelSchema)
+async def get_model(model_id: str):
+    model = await db["models"].find_one({"_id": model_id}, {'brand_id': 0})
+    model['links'] = dict()
+    model['links']['link_true'] = model['link_true']
+    # model['links']['link_ais'] = model['link_ais']
+    # model['links']['link_dtac'] = model['link_dtac']
     details = dict()
-    for provider in await db["providers"].find({'model_id': id}).to_list(1000):
+    for provider in await db["providers"].find({'model_id': model_id}).to_list(1000):
         provider_name = provider['provider']
-        details[provider_name] = list()
+        details[provider_name] = dict()
         for detail in await db["details"].find({'provider_id': provider['_id']}, {'provider_id': 0}).to_list(1000):
             
             detail['promotions'] = list()
@@ -252,11 +256,11 @@ async def get_model(id: str):
                 promotion['packages'] = packages
                 detail['promotions'].append(promotion)
             
-            details[provider_name].append(detail)
+            details[provider_name][detail['ram']] = detail
     model['detail'] = details
     return model
 
-@app.post("/model", response_description="Add new model", response_model=ModelSchema)
+@app.post("/model", tags=["Models"], response_description="Add new model", response_model=ModelSchema)
 async def create_model(model: ModelSchema = Body(...)):
     if (get_model := await db["models"].find_one({"name": model.name})) is not None:
         return JSONResponse(status_code=status.HTTP_409_CONFLICT, content=get_model)
@@ -266,7 +270,7 @@ async def create_model(model: ModelSchema = Body(...)):
     create_model = await db["models"].find_one({"_id": new_model.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=create_model)
 
-@app.put("/model/{id}", response_description="Update a model", response_model=ModelSchema)
+@app.put("/model/{id}", tags=["Models"], response_description="Update a model", response_model=ModelSchema)
 async def update_model(id: str, model: UpdateModelSchema = Body(...)):
     model = {k: v for k, v in model.dict().items() if v is not None}
 
@@ -285,7 +289,12 @@ async def update_model(id: str, model: UpdateModelSchema = Body(...)):
 
     raise HTTPException(status_code=404, detail=f"Brand {id} not found")
 
-@app.post("/provider", response_description="Add new provider", response_model=ProviderSchema)
+@app.get("/provider/{model_id}", tags=["Providers"], response_description="Get providers", response_model=List[ProviderSchema])
+async def get_providers(model_id: str):
+    providers = await db["providers"].find({'model_id': model_id}).to_list(1000)
+    return providers
+
+@app.post("/provider", tags=["Providers"], response_description="Add new provider", response_model=ProviderSchema)
 async def create_provider(provider: ProviderSchema = Body(...)):
     if (get_provider := await db["providers"].find_one({"model_id": provider.model_id, 'provider': provider.provider})) is not None:
         return JSONResponse(status_code=status.HTTP_409_CONFLICT, content=get_provider)
@@ -295,7 +304,12 @@ async def create_provider(provider: ProviderSchema = Body(...)):
     create_provider = await db["providers"].find_one({"_id": new_provider.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=create_provider)
 
-@app.post("/detail", response_description="Add new model detail", response_model=DetailSchema)
+@app.get("/detail/{provider_id}", tags=["Details"], response_description="Get details", response_model=List[DetailSchema])
+async def get_details(provider_id: str):
+    details = await db["details"].find({'provider_id': provider_id}).to_list(1000)
+    return details
+
+@app.post("/detail", tags=["Details"], response_description="Add new model detail", response_model=DetailSchema)
 async def create_detail(detail: DetailSchema = Body(...)):
     if (get_detail := await db["details"].find_one({"provider_id": detail.provider_id, 'ram': detail.ram})) is not None:
         return JSONResponse(status_code=status.HTTP_409_CONFLICT, content=get_detail)
@@ -305,7 +319,7 @@ async def create_detail(detail: DetailSchema = Body(...)):
     create_detail = await db["details"].find_one({"_id": new_detail.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=create_detail)
 
-@app.put("/detail/{id}", response_description="Update a model detail", response_model=DetailSchema)
+@app.put("/detail/{id}", tags=["Details"], response_description="Update a model detail", response_model=DetailSchema)
 async def update_detail(id: str, detail: UpdateDetailSchema = Body(...)):
     detail = {k: v for k, v in detail.dict().items() if v is not None}
 
@@ -323,7 +337,12 @@ async def update_detail(id: str, detail: UpdateDetailSchema = Body(...)):
 
     raise HTTPException(status_code=404, detail=f"Detail {id} not found")
 
-@app.post("/promotion", response_description="Add new promotion", response_model=PromotionSchema)
+@app.get("/promotion/{detail_id}", tags=["Promotions"], response_description="Get promotions", response_model=List[PromotionSchema])
+async def get_promotions(detail_id: str):
+    promotions = await db["promotions"].find({'model_detail_id': detail_id}).to_list(1000)
+    return promotions
+
+@app.post("/promotion", tags=["Promotions"], response_description="Add new promotion", response_model=PromotionSchema)
 async def create_promotion(promotion: PromotionSchema = Body(...)):
     if (get_promotion := await db["promotions"].find_one({"model_detail_id": promotion.model_detail_id, 'name': promotion.name})) is not None:
         return JSONResponse(status_code=status.HTTP_409_CONFLICT, content=get_promotion)
@@ -333,12 +352,12 @@ async def create_promotion(promotion: PromotionSchema = Body(...)):
     create_promotion = await db["promotions"].find_one({"_id": new_promotion.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=create_promotion)
 
-@app.get("/package/{id}", response_description="Get packages", response_model=List[PackageSchema])
-async def list_brands(id: str):
-    brands = await db["packages"].find({'promotion_id': id}).to_list(1000)
-    return brands
+@app.get("/package/{promotion_id}", tags=["Packages"], response_description="Get packages", response_model=List[PackageSchema])
+async def get_packages(promotion_id: str):
+    packages = await db["packages"].find({'promotion_id': promotion_id}).to_list(1000)
+    return packages
 
-@app.post("/package", response_description="Add new package", response_model=PackageSchema)
+@app.post("/package", tags=["Packages"], response_description="Add new package", response_model=PackageSchema)
 async def create_package(package: PackageSchema = Body(...)):
     if (get_package := await db["packages"].find_one({"package_no": package.package_no, 'promotion_id': package.promotion_id})) is not None:
         return JSONResponse(status_code=status.HTTP_409_CONFLICT, content=get_package)
