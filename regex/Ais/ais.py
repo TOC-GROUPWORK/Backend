@@ -90,7 +90,7 @@ def get_text(data_td):
                 ls_text.pop()
             if '5G Hot Deal' in ls_text:
                 ls_text.pop(-2)
-            print('After : ', ls_text)
+            # print('After : ', ls_text)
             if 'txttype' in data:
                 if 'txtmodel' in data:
                     # promotions 12 months
@@ -254,6 +254,7 @@ def get_iphone(number):
     # print(page.text)
     # sh = section
     package = re.findall(section, page.text)
+    print(len(package))
     # print(package[0][0], len(package))
 
     # print(len(package))

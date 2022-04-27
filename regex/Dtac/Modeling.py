@@ -2,6 +2,7 @@ import dtac
 import json
 import requests
 import ast
+import re
 
 iphone13pro = '/iphone-13-pro'
 iphone13 = '/iphone-13' 
@@ -15,9 +16,10 @@ s22 = 'samsung-galaxy-s22'
 s21 = 'samsung-galaxy-s21-fe'
 z = 'galaxy-z'
 
-data = dtac.samsung()
+raw_data = dtac.apple('iphone13')
+# data = raw_data[0]
 with open('test.json', 'w', encoding='utf-8') as writefile:
-    json.dump(data, writefile, ensure_ascii=False)
+    json.dump(raw_data, writefile, ensure_ascii=False)
 print('Done writing .json')
 
 def get_brands() -> list[str]:
@@ -28,69 +30,97 @@ def get_brands() -> list[str]:
 
     return response
 
+def main():
+    print('START GET DATA')
+    brands = get_brands()
+    # with open('brands.json', 'w', encoding='utf-8') as writefile:
+    #     json.dump(brands, writefile, ensure_ascii=False)
+    # print('Done writing .json')
+    # print(brands)
+    brand_id = None
+    for brand in brands:
+        if "Apple" == brand["name"]:
+            brand_id = brand["_id"]
+            break
+    # print(brand_id)
 
-# print('START GET DATA')
-# brands = get_brands()
-# with open('brands.json', 'w', encoding='utf-8') as writefile:
-#     json.dump(brands, writefile, ensure_ascii=False)
-# print('Done writing .json')
-# print(brands)
+    for item in raw_data:
+        print()
+        print('item = ',item)
+        product = {
+                    'brand_id': brand_id,
+                    'name': item['model'][0],
+                    'color_name' : [],
+                    'link_ais' : 'string',
+                    'link_true' : 'string',
+                    'link_dtac' : 'string',
+                    'color_style' : [],
+                    'img': [],
+                }
+        # print(product)
+        response = requests.post('http://127.0.0.1:8000/model', json = product)
+        response = response._content.decode('utf-8')
+        response = ast.literal_eval(response)
+        # print(response['_id'])
+        # requests.put(f'http://127.0.0.1:8000/model/{response["_id"]}', json = {"link_dtac" :  })
+        print(response)
+        provider_data = {
+            'model_id': response['_id'],
+            'provider': 'DTAC'
+        }
 
-# product = {
-#             'brand_id': id,
-#             'name': data.model,
-#             'color_name' : None,
-#             'color_style' : None,
-#             'img': None,
-#         }
+        provider_res = requests.post('http://127.0.0.1:8000/provider', json = provider_data)
+        provider_res = provider_res._content.decode('utf-8')
+        provider_res = ast.literal_eval(provider_res)
 
-# response = requests.post('http://127.0.0.1:8000/model', json = product)
-# response = response._content.decode('utf-8')
-# response = ast.literal_eval(response)
-# # print(response['_id'])
+        ram = item['size'][0]
+        data_detail = { 'provider_id': provider_res['_id'], 'ram': ram }
+        detail_response = requests.post('http://127.0.0.1:8000/detail', json = data_detail)
+        detail_response = detail_response._content.decode('utf-8')
+        detail_response = json.loads(ast.literal_eval(repr(detail_response)))
 
-# provider_data = {
-#     'model_id': response['_id'],
-#     'link' : None,
-#     'provider': 'DTAC'
-# }
+        for package in item['package']:
+            print('package = ', package)
+            promotion_dict = dict()
 
-# provider_res = requests.post('http://127.0.0.1:8000/provider', json = provider_data)
-# provider_res = provider_res._content.decode('utf-8')
-# provider_res = ast.literal_eval(provider_res)
+            name = str(package['detail']) 
 
-# data = { 'provider_id': provider_res['_id'], 'ram': data.size }
-# detail_response = requests.post('http://127.0.0.1:8000/detail', json = data)
-# detail_response = detail_response._content.decode('utf-8')
-# detail_response = json.loads(ast.literal_eval(repr(detail_response)))
+            for promotion in package['promotions']:
 
-# promotion_dict = dict()
+                price = promotion['dtac_price']
+                # print(name, price)
 
-# name = None
-# price = re.findall(START_PRICE, promotion[0])[0]
-# print(name, price)
+                promotion_dict['model_detail_id'] = detail_response['_id']
+                promotion_dict['name'] = name
+                promotion_dict['detail'] = f'เริ่มต้น {price} บาท'
+                # print()
+                # print(promotion_dict)
+                promotion_res = requests.post('http://127.0.0.1:8000/promotion', json = promotion_dict)
+                promotion_res = promotion_res._content.decode('utf-8')
+                promotion_res = json.loads(ast.literal_eval(repr(promotion_res)))
 
-# promotion_dict['model_detail_id'] = detail_response['_id']
-# promotion_dict['name'] = name
-# promotion_dict['detail'] = f'เริ่มต้น {price} บาท'
+                # print(promotion_res)
+                # print(promotion)
+                sprice = promotion['dtac_price']
+                prepaid_price = promotion['advance_fee']
+                package_price = promotion['package_price']
+                contact = re.findall(r'[0-9]+', package['contact'])
+                if contact == []:
+                    contact = ['12']
+                print(contact)
+                package_type = contact[0]
+                detail = '-'
 
-# if promotion_dict['name'] == 'เครื่องเปล่า':
-#     data = { 'normalprice': promotion_dict['detail'] }
-#     requests.put('http://127.0.0.1:8000/detail/' + detail_response['_id'], json = data)
-#     continue
+                p_data = {
+                            'package_no' : None,
+                            'promotion_id' : promotion_res['_id'],
+                            'specialprice' : sprice,
+                            'prepaid' : str(prepaid_price),
+                            'package' : package_price,
+                            'package_type' : package_type,
+                            'package_detail': detail,
+                        }
 
-# promotion_res = requests.post('http://127.0.0.1:8000/promotion', json = promotion_dict)
-# promotion_res = promotion_res._content.decode('utf-8')
-# promotion_res = json.loads(ast.literal_eval(repr(promotion_res)))
+                requests.post('http://127.0.0.1:8000/package', json = p_data)
 
-# p_data = {
-#             'package_no' : None,
-#             'promotion_id' : promotion_res['_id'],
-#             'specialprice' : price,
-#             'prepaid' : prepaid_price[0] if len(prepaid_price) > 0 else '-',
-#             'package' : package_price,
-#             'package_type' : package_type,
-#             'package_detail': detail,
-#         }
-
-# requests.post('http://127.0.0.1:8000/package', json = p_data)
+main()

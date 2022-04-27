@@ -454,7 +454,7 @@ def get_model12(path):
         model = re.findall(txtmodel, model[0])
         ls_json.append({
             'model' : model,
-            'size' : size[0],
+            'size' : size,
             'package' : [
                 {
                     'contact' : contact[0],
@@ -862,7 +862,7 @@ def samsung(order='all'):
             print(contact)
             ls_json.append({
                 'model' : model,
-                'size' : size[0],
+                'size' : size,
                 'package' : [
                     {
                         'contact' : contact[0],
@@ -944,7 +944,7 @@ def samsung(order='all'):
             model = re.findall(txtmodel, model[0])
             ls_json.append({
                 'model' : model,
-                'size' : size[0],
+                'size' : size,
                 'package' : [
                     {
                         'contact' : contact[0],
