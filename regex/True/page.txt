@@ -1,0 +1,10 @@
+<button data-test-package-id="452229" class="h-full rounded-xl hover:shadow-lg shadow-lg" style="padding: 3px; width: 198px;"><div class="flex flex-col rounded-lg shadow-gray-500 h-full overflow-hidden shadow-thick-red-500"><div class="bg-red-pink-gradient text-white text-3xl font-bold p-4 py-3"><div class="text-44"> 11,990.-</div></div> <div class="flex flex-col gap-1 flex-1" style="padding-left: 0px;"><div class="my-0 text-center text-20 font-light flex-1" style="min-width: 180px; max-width: 240px;"><div style="padding: 0.5rem 0.5rem 2px;">
+                                                ย้ายค่ายเบอร์เดิม พร้อมสมัครแพ็กเกจ
+                                                <span class="font-bold text-22">1,399.-</span>
+                                                ขึ้นไป
+                                            </div> <div><!----> <div style="padding: 2px 0.5rem 0px;">
+                                                    สัญญา
+                                                    <span class="font-bold text-22">
+                                                        12
+                                                        เดือน
+                                                    </span></div></div></div> <div class="flex justify-between items-end p-2" style="padding-top: 0px;"><div></div> <div class="grid place-items-center border border-gray-80 rounded-full w-[20px] h-[20px] bg-red-500 border-red-500"><svg width="14" height="10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.407.03c-.307.01-.6.14-.812.361-2.29 2.294-4.378 4.55-6.59 6.803L2.296 5.03a1.185 1.185 0 0 0-1.662.184 1.182 1.182 0 0 0 .185 1.662l3.545 2.837c.471.375 1.148.337 1.574-.09 2.545-2.55 4.83-5.06 7.327-7.563A1.183 1.183 0 0 0 12.407.03Z" fill="#FFF"></path></svg></div></div></div></div></button>

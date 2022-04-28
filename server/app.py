@@ -42,6 +42,7 @@ class GetAllBrandsSchema(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     name: str = Field(...)
     img: str = Field(...)
+    true: list = Field(...)
 
     class Config:
         arbitrary_types_allowed = True
@@ -98,14 +99,6 @@ class ModelSchema(BaseModel):
         allow_population_by_field_id = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
-        schema_extra = {
-            "example": {
-                'provider': 'TRUE',
-                'brand_id': '62570f9cf00fd0e5886b7f19',
-                'link': 'http://example.com',
-                'img': []
-            }
-        }
 
 class GetModelSchema(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
@@ -241,9 +234,9 @@ async def list_models():
 async def get_model(model_id: str):
     model = await db["models"].find_one({"_id": model_id}, {'brand_id': 0})
     model['links'] = dict()
-    model['links']['link_true'] = model['link_true']
-    # model['links']['link_ais'] = model['link_ais']
-    # model['links']['link_dtac'] = model['link_dtac']
+    model['links']['TRUE'] = model['link_true']
+    # model['links']['AIS'] = model['link_ais']
+    # model['links']['DTAC'] = model['link_dtac']
     details = dict()
     for provider in await db["providers"].find({'model_id': model_id}).to_list(1000):
         provider_name = provider['provider']

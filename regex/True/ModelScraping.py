@@ -5,27 +5,39 @@ import requests
 from pyppeteer import launch
 import json
 
-STORE_DETAIL        = r'<div class="page online-store-detail">((.|\n)+?)</script></div></div></div>'
-IMAGE_CONTAINER     = r'<div class="stickyProb">((.|\n)+?)<div class="grid gap-4 lg:gap-8 mb-auto">'
-DETAIL_CONTAINER    = r'<div class="grid gap-4 lg:gap-8 mb-auto">((.|\n)+?)</div></div></div></div></div>'
+# '<div class="page online-store-detail">((.|\n)+?)</script></div></div></div>'
+STORE_DETAIL        = r'<div [acdegilnoprst=" -]*><div>((.|\n)*)<\/script><\/div><\/div><\/div>'
 
-PRODUCT_IMAGE       = r'<img data-v-2f2705a3="" src="((.)+?)" alt="Product Image" class="carousel">'
-NAME_CONTAINER      = r'(<div class="grid gap-4" id="device-price-id">((.|\n)+?)[!<>-]*</div></div>)'
-PRODUCT_NAME        = r'<div class="flex justify-between"><div class="[a-z0-9 -]*">((.)+?)</div></div>'
+# '<div class="stickyProb">((.|\n)+?)<div class="grid gap-4 lg:gap-8 mb-auto">'
+IMAGE_CONTAINER     = r'<div [a-zP="]*>((.|\n)+?)<div [a-dgilmopr-u0-9=": -]*>'
+# '<img data-v-2f2705a3="" src="((.)+?)" alt="Product Image" class="carousel">'
+PRODUCT_IMAGE       = r'<img [adftv0-9="-]* src="((.)+?)" [acdeglmorstuIP=" ]*>'
 
-COLOR_NAME          = r'<label class="w-full break-word" style="opacity: [0-9.]+?;">[ \n]+?[ ]+([a-zA-Z ]+?)[ \n]+?</label>'
+# '<div class="grid gap-4 lg:gap-8 mb-auto">((.|\n)+?)</div></div></div></div></div>'
+DETAIL_CONTAINER    = r'<div [a-dgilmopr-u0-9=": -]*>((.|\n)+?)<\/div><\/div><\/div><\/div><\/div>'
+# '(<div class="grid gap-4" id="device-price-id">((.|\n)+?)[!<>-]*</div></div>)'
+NAME_CONTAINER      = r'(<div [acdgilprs4=" -]+ [cdeiprv=" -]+>((.|\n)+?)[!<>-]*<\/div><\/div>)'
+# '<div class="flex justify-between"><div class="[a-z0-9 -]*">((.)+?)</div></div>'
+PRODUCT_NAME        = r'<div [abcefijlnstuwxy=" -]*><div [a-z0-9=" -]*>(.+?)<\/div><\/div>'
+
+# '<label class="w-full break-word" style="opacity: [0-9.]+?;">[ \n]+?[ ]+([a-zA-Z ]+?)[ \n]+?</label>'
+COLOR_NAME          = r'<label [a-flkorsuw=" -]* [aceilopsty0-9:;.=" ]+?>[ \n]+?[ ]+([a-zA-Z ]+?)[ \n]+?<\/label>'
 COLOR_STYLE         = r'<div class=\"[a-z0-9- [\]]* shadow-inset\" ((.)+)></div></button>'
 COLOR_BG            = r'style=\"[background\-clo]+: rgb[(]([0-9]+?), ([0-9]+?), ([0-9]+?)[)];\"'
 
-RAM_LIST            = r'<button data-options-.+?-id="[0-9]+?" class="[a-z0-9 :-]+?">([a-zA-Z0-9]+?)</button>'
+# '<button data-options-.+?-id="[0-9]+?" class="[a-z0-9 :-]+?">([a-zA-Z0-9]+?)</button>'
+RAM_LIST            = r'<button [adinopst-]+.+?-id="[0-9]+?" class="[a-z0-9 :-]+?">([a-zA-Z0-9]+?)<\/button>'
 # RAM_LIST            = r'<button [disable=" ]*?data-options-.+?-id="[0-9]+?" class="[a-z0-9 :-]+?">([a-zA-Z0-9]+?)</button>'
 
-PROMOTION_CONTAINER = r'(<div class="flex-auto">(.|\n)+?)<div class="accordion flex flex-col items-end is-closed">'
+# '(<div class="flex-auto">(.|\n)+?)<div class="accordion flex flex-col items-end is-closed">'
+PROMOTION_CONTAINER = r'(<div [aceflostux="-]*>(.|\n)+?)<div [acdeflimnorstx=" -]*>'
 PROMOTION_BOX       = r'(<button [adtespromin-]+?="[a-z0-9_]+?" [clas]+?="[a-z :-]+?" style="[a-z0-9 :;]+?">((.|\n)+?)</button>)'
 PACKAGE_BOX         = r'(<button ([adtespckgi-]+?="[a-z0-9_]+?"| |[clas]+?="[a-z :-]+?" style="[a-z0-9 :;]+?")+?>((.|\n)+?)</button>)'
 
-PROMOTION_NAME      = r'<div class="flex-1 text-center font-medium" style="font-size: 20px;">[ \n]+?[ ]+(.+)[ \n]+?</div>'
-START_PRICE         = r'<div class="text-red text-3xl font-bold">([0-9,]+)+?[.-]+</div>'
+# '<div class="flex-1 text-center font-medium" style="font-size: 20px;">[ \n]+?[ ]+(.+)[ \n]+?</div>'
+PROMOTION_NAME      = r'<div [acdefilmnoprstuxyz0-2=":; -]*>[ \n]+?[ ]+(.+)[ \n]+?<\/div>'
+# '<div class="text-red text-3xl font-bold">([0-9,]+)+?[.-]+</div>'
+START_PRICE         = r'<div [a-flnorstx3=" -]*>([0-9,]+)+?[.-]+<\/div>'
 
 PACKAGE_NEW_USER    = r"<div class=\"flex flex-col grid h-full text-20 font-light cursor-pointer\" style=\"min-width: 192px;\">((.|\n)+?</path></svg></div></div>)</div>"
 
@@ -119,6 +131,10 @@ async def get_promotions(page, provider_id: str, rams: list[str]) -> dict:
 
                 detail = "EMPTY TEXT"
                 if name == "ลูกค้าปัจจุบันทรูมูฟ เอช":
+
+                    f= open(f"page.txt","w+", encoding="utf-8")
+                    f.write(package[0])
+                    f.close()
                     detail = re.findall(PACKAGE_DETAIL, package[0])[0]
                     packages = re.findall(PACKAGE_NEW_USER, package[0])
                     for i, p in enumerate(packages):
@@ -164,6 +180,7 @@ async def get_model_data(page, id: str, link: str):
         # await page.screenshot({ 'path': 'image.png'})
 
         page_body = await page.evaluate('() => document.getElementsByTagName("BODY")[0].innerHTML')
+
         container = re.findall(STORE_DETAIL, page_body)[0][0]
 
         # GET PRODUCT IMAGE
@@ -175,7 +192,7 @@ async def get_model_data(page, id: str, link: str):
 
         # GET PRODUCT NAME
         name_container = re.findall(NAME_CONTAINER, detail_container)[0][0]
-        product_name = re.findall(PRODUCT_NAME, name_container)[0][0]
+        product_name = re.findall(PRODUCT_NAME, name_container)[0]
         print(product_name)
 
         # GET PRODUCT COLOR
@@ -235,7 +252,6 @@ async def get_model_iterator(page, brand: dict):
 
 async def get_data(page, brands: list[str]):
 
-    datas = dict()
     for brand in brands:
         await get_model_iterator(page, brand)
 

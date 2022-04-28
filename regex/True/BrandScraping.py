@@ -8,34 +8,46 @@ import os
 MAIN_TRUE = 'https://truemoveh.truecorp.co.th/device#'
 
 # MAIN PAGE FOR BRANDS SCRAPING
-BRAND_LIST = r'<div class="opt-list " data-name="select_brand" .+</div>'
-BRAND_SPAN = r'<span .+</span>'
-BRAND_NAME = r'>([a-zA-Z ]+?)<'
-# NAME_TEXT = r'[a-zA-Z ]+'
+# '<div class="opt-list " data-name="select_brand" data-id="[\d]*".+</div>'
+BRAND_LIST = r'<div [a-eilm-pr-t="\-_ ]+ [adit"=\-]*[\d]+["]+? .+<\/div>'                     
+                         
+# <span class="opt-txt">Apple</span>
+BRAND_NAME = r'<span [aclopstx="->]+(.+)<\/span>'
 
 # BRAND PAGE FOR MODELS SCRAPING
-# PAGE_NO_BOX = r'<ul class="pg-no-box">((.|\n)*?)</ul>'
-PAGE_QUANTITY = r'<span class="hpl-red-txt">[0-9]*</span>'
+# '<span class="hpl-red-txt">[0-9]*</span>'
+PAGE_QUANTITY = r'<span [acdehlprstx"=\- ]*>([\d]*)<\/span>'
 
 # MODEL GRID BOX
-GRID_BOX = r'<ul id="grid-box" class="box-inner-list-cl clearfix">((.|\n)+?)</ul>'
-GRID_FILTER = r'<li class="filter-items".*>((.|\n)+?)</li>'
-# MODEL_LINK = r'<a href="https://store.truecorp.co.th/online-store/item/[A-Z0-9]+?\?ln=th">'
-MODEL_LINK = r'<a href="(([a-zA-Z0-9]|[-]|[=]|[/]|[?]|[.]|[:])+?)">'
-MODEL_NAME = r'class="txt-brand">((.)+?)</a>'
+# GET MODEL LIST
+# '<ul id="grid-box" class="box-inner-list-cl clearfix">((.|\n)+?)</ul>'
+GRID_BOX = r'<ul i[a-gilnorstx="\- ]+?>((.|\n)+?)<\/ul>'
+
+# GET MODEL
+# '<li class="filter-items" .*>((.|\n)+?)</li>'
+GRID_FILTER = r'<li [acefilmrst="-]+ .*>((.|\n)+?)<\/li>'
+
+# MODEL_LINK
+# '<a href="https://store.truecorp.co.th/online-store/item/[A-Z0-9]+?\?ln=th">'
+MODEL_LINK = r'<a href="([a-zA-Z0-9-=\/?.:]+?)">'
+
+# MODEL_NAME
+# ' class="txt-brand">iPhone 13 Pro Max</a>'
+MODEL_NAME = r' [a-dlnrstx="-]+>(.+?)<\/a>'
 
 def get_brands(main_url: str) -> list[str]:
      print('GET ALL BRANDS!!!')
      page = requests.get(main_url)
      page.encoding = 'utf-8'
 
+     # print(page.text)
      brands_list = re.findall(BRAND_LIST, page.text)
 
      brands = []
      for brand in brands_list:
-          span = re.findall(BRAND_SPAN, brand)[0]
-          brand_name = re.findall(BRAND_NAME, span)[0]
-          # name_text = re.findall(NAME_TEXT, brand_name)[0]
+
+          brand_name = re.findall(BRAND_NAME, brand)[0]
+          print(brand_name)
 
           data = { 'name': brand_name, }
           response = requests.post('http://127.0.0.1:8000/brand', json = data)
@@ -44,8 +56,8 @@ def get_brands(main_url: str) -> list[str]:
           # print(repr(response))
           brands.append(response)
 
-     # f= open(f"files/brands.txt","w")
-     # f.write('\n'.join(brands))
+     # f= open(f"page.txt","w+", encoding="utf-8")
+     # f.write(page.text)
      # f.close()
 
      return brands
@@ -60,16 +72,7 @@ async def get_page_quantity(page, brand: str) -> int:
      # GET BODY HTML
      page_body = await page.evaluate('() => document.getElementsByTagName("BODY")[0].innerHTML')
 
-     # page = requests.get(uri)
-     # page.encoding = 'utf-8'
-     # # GET BODY HTML
-     # page_body = page.text
-
-     # page_no_box = re.findall(PAGE_NO_BOX, page.text)[0][0]
-     # print(page_no_box)
-
-     page_no_box = re.findall(PAGE_QUANTITY, page_body)[0]
-     page_quantity = re.findall(r'[0-9]+', page_no_box)[0]
+     page_quantity = re.findall(PAGE_QUANTITY, page_body)[0]
      print(page_quantity)
 
      # await page.close()
@@ -81,8 +84,6 @@ async def get_models_at_page(page, brand: str, page_no: int) -> list[str]:
      uri = 'https://truemoveh.truecorp.co.th/device?search_brand=' + brand + '&search_network=all&page=' + str(page_no)
      print(uri)
 
-     # page = requests.get(uri)
-     # page.encoding = 'utf8'
      try:
           await page.goto(uri)
           await page.waitFor(2000)
@@ -91,7 +92,9 @@ async def get_models_at_page(page, brand: str, page_no: int) -> list[str]:
 
      # GET BODY HTML
      page_body = await page.evaluate('() => document.getElementsByTagName("BODY")[0].innerHTML')
-     # page_body = page.text
+     f= open(f"page.txt","w+", encoding="utf-8")
+     f.write(page_body)
+     f.close()
 
      # <ul id="grid-box" class="box-inner-list-cl clearfix">
      grid_box = re.findall(GRID_BOX, page_body)[0][0]
@@ -103,8 +106,8 @@ async def get_models_at_page(page, brand: str, page_no: int) -> list[str]:
           model = model[0]
           # print(model)
           try:
-               link = re.findall(MODEL_LINK, model)[0][0]
-               name = re.findall(MODEL_NAME, model)[0][0].strip()
+               link = re.findall(MODEL_LINK, model)[0]
+               name = re.findall(MODEL_NAME, model)[0].strip()
           except:
                continue
           links.append(link)
@@ -122,6 +125,7 @@ async def get_models(page, brand: str, id: str, page_quantity: int):
      model_links = []
      for page_no in range(page_quantity):
           model_links += await get_models_at_page(page, brand, page_no + 1)
+          break
      if len(model_links) == 0:
           return
      # f = open(f'files/{brand}.txt', 'r')
