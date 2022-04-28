@@ -190,12 +190,23 @@ async def get_app():
 @app.get("/brands", tags=["Brands"], response_description="List all brands", response_model=List[GetAllBrandsSchema])
 async def list_brands():
     brands = await db["brands"].find().to_list(1000)
+    for brand in brands:
+        models = await db["models"].find({'brand_id':brand['_id']}, {'name': 1}).to_list(1000)
+        if models == []:
+            brands.remove(brand)
     return brands
 
 @app.get("/brand/{id}", tags=["Brands"], response_description="Get brand", response_model=GetBrandSchema)
 async def get_brand(id: str):
     brand = await db["brands"].find_one({'_id': id})
-    brand['models_list'] = brand.get('models_list', await db["models"].find({'brand_id': id}, {'_id': 1, 'name': 1, 'img': 1}).to_list(1000))
+    brand['models_list'] = brand.get('models_list', await db["models"].find(
+        {"$and": [
+            {'brand_id': id}, 
+            {'img': {
+                    "$ne": []
+                }}
+        ]},
+        {'_id': 1, 'name': 1, 'img': 1}).to_list(1000))
     return brand
 
 @app.post("/brand", tags=["Brands"], response_description="Add new brand", response_model=BrandSchema)

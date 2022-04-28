@@ -29,24 +29,27 @@ COLOR_BG            = r'style=\"[background\-clo]+: rgb[(]([0-9]+?), ([0-9]+?), 
 RAM_LIST            = r'<button [adinopst-]+.+?-id="[0-9]+?" class="[a-z0-9 :-]+?">([a-zA-Z0-9]+?)<\/button>'
 # RAM_LIST            = r'<button [disable=" ]*?data-options-.+?-id="[0-9]+?" class="[a-z0-9 :-]+?">([a-zA-Z0-9]+?)</button>'
 
-# '(<div class="flex-auto">(.|\n)+?)<div class="accordion flex flex-col items-end is-closed">'
-PROMOTION_CONTAINER = r'(<div [aceflostux="-]*>(.|\n)+?)<div [acdeflimnorstx=" -]*>'
-PROMOTION_BOX       = r'(<button [adtespromin-]+?="[a-z0-9_]+?" [clas]+?="[a-z :-]+?" style="[a-z0-9 :;]+?">((.|\n)+?)</button>)'
-PACKAGE_BOX         = r'(<button ([adtespckgi-]+?="[a-z0-9_]+?"| |[clas]+?="[a-z :-]+?" style="[a-z0-9 :;]+?")+?>((.|\n)+?)</button>)'
+# '(<div class="flex-auto">(.|\n)+?)<div class="dropdown-gap"><div class="accordion flex flex-col items-end is-closed">'
+PROMOTION_CONTAINER = r'(<div [aceflostux="-]*>(.|\n)+?)<div [acdglnoprsw="-]*><div [acdeflimnorstx=" -]*>'
+PROMOTION_BOX       = r'(<button [adtespromin-]+?="[\w]+?" [clas]+?="[a-z :-]+?" style="[a-z0-9 :;]+?">((.|\n)+?)</button>)'
+PACKAGE_BOX         = r'(<button ([adtespckgi-]+?="[\w]+?"| |[clas]+?="[a-z :-]+?" style="[a-z0-9 :;]+?")+?>((.|\n)+?)</button>)'
 
 # '<div class="flex-1 text-center font-medium" style="font-size: 20px;">[ \n]+?[ ]+(.+)[ \n]+?</div>'
 PROMOTION_NAME      = r'<div [acdefilmnoprstuxyz0-2=":; -]*>[ \n]+?[ ]+(.+)[ \n]+?<\/div>'
 # '<div class="text-red text-3xl font-bold">([0-9,]+)+?[.-]+</div>'
 START_PRICE         = r'<div [a-flnorstx3=" -]*>([0-9,]+)+?[.-]+<\/div>'
 
-PACKAGE_NEW_USER    = r"<div class=\"flex flex-col grid h-full text-20 font-light cursor-pointer\" style=\"min-width: 192px;\">((.|\n)+?</path></svg></div></div>)</div>"
+# '<div class="flex flex-col grid h-full text-20 font-light cursor-pointer" style="min-width: 192px;">((.|\n)+?</path></svg></div></div>)</div>'
+PACKAGES    = r'<div [\w=":; -]*>((.|\n)+?<\/path><\/svg><\/div><\/div>)<\/div>'
 
-PROMOTION_PRICE     = r'<div class="text-44">[ ]?([0-9,]+)+?[.-]+</div>|<div class=\"[texcnrxldfobp 23\-]+\">[ \n]+([0-9,]+)+?[.-]+[ \n]+</div>' # r'<div class="text-44">[ ]?([0-9,.-]+)</div>'
-PACKAGE_PRICE       = r'<span class=\"font-bold text-22\">[ \n]*([0-9,]+)+?[.-]+</span>[\n]'
-PREPAID_PRICE       = r'<span class="font-bold text-22">[ \n]*([0-9,]+)+?[.-]+</span></div>'
-PACKAGE_TYPE        = r'<span class=\"font-bold text-22\">[ \n]+([0-9]+)+?[ \n]+.+[ \n]+</span>'
+# '<div class="text-44">[ ]?([0-9,]+)+?[.-]+</div>|<div class=\"[texcnrxldfobp 23\-]+\">[ \n]+([0-9,]+)+?[.-]+[ \n]+</div>'
+PROMOTION_PRICE     = r'<div [acestx4="-]*>[ ]?([0-9,]+)+?[.-]+<\/div>|<div class=\"[a-z23 -]+\">[ \n]+([0-9,]+)+?[.-]+[ \n]+<\/div>'
+PACKAGE_PRICE       = r'<span [a-flnostx2=" -]*>[ \n]*([0-9,]+)+?[.-]+</span>[\n]'
+PREPAID_PRICE       = r'<span [a-flnostx2=" -]*>[ \n]*([0-9,]+)+?[.-]+</span></div>'
+PACKAGE_TYPE        = r'<span [a-flnostx2=" -]*>[ \n]+([0-9]+)+?[ \n]+.+[ \n]+</span>'
 
-PACKAGE_DETAIL      = r'<div class=\"grid place-items-center bg-red-pink-gradient text-white text-xl p-4 py-2 mw-[\[]350px[\]] h-[\[]100px[\]]\"><!---->[\ \n]+?[\ ]+(.+)[\n][\ ]+?</div>'
+# '<div class="grid place-items-center bg-red-pink-gradient text-white text-xl p-4 py-2 mw-[\[]350px[\]] h-[\[]100px[\]]"><!---->[\ \n]+?[\ ]+(.+)[\n][\ ]+?</div>'
+PACKAGE_DETAIL      = r'<div [a-z=" -]* p-4 py-2 mw-[\[]350px[\]] h-[\[]100px[\]]"><!---->[\ \n]+?[\ ]+(.+)[\n][\ ]+?<\/div>'
 
 def get_brands() -> list[str]:
     print('GET ALL BRANDS!!')
@@ -85,15 +88,14 @@ async def get_promotions(page, provider_id: str, rams: list[str]) -> dict:
         promotion_box = re.findall(PROMOTION_BOX, promotion_container)
 
         # promotions = await page.querySelectorAll('div.flex-auto > div > div.grid.gap-1.grid-flow-col > button.rounded-xl.w-full.hover\:shadow-lg')
-
+        print("Promotion")
         for index, promotion in enumerate(promotion_box):
-            print("Promotion" if index == 0 else "", end=" ")
 
             promotion_dict = dict()
 
-            name = re.findall(PROMOTION_NAME, promotion[0])[0]
+            name = re.findall(PROMOTION_NAME, promotion[0])[0].strip()
             price = re.findall(START_PRICE, promotion[0])[0]
-            print(name, price)
+            # print(name, price)
 
             promotion_dict['model_detail_id'] = detail_response['_id']
             promotion_dict['name'] = name
@@ -125,18 +127,14 @@ async def get_promotions(page, provider_id: str, rams: list[str]) -> dict:
             # print(len(package_box))
 
             promotion_dict['package'] = list()
+            print("Package", "'" + name + "'", price)
             for index, package in enumerate(package_box):
                 # print(package[0]) 
-                print("Package" if index == 0 else "", end="")
 
                 detail = "EMPTY TEXT"
-                if name == "ลูกค้าปัจจุบันทรูมูฟ เอช":
-
-                    f= open(f"page.txt","w+", encoding="utf-8")
-                    f.write(package[0])
-                    f.close()
+                if promotion_dict['name'] == 'ลูกค้าปัจจุบันทรูมูฟ เอช':
                     detail = re.findall(PACKAGE_DETAIL, package[0])[0]
-                    packages = re.findall(PACKAGE_NEW_USER, package[0])
+                    packages = re.findall(PACKAGES, package[0])
                     for i, p in enumerate(packages):
                         price = re.findall(PROMOTION_PRICE, p[0])[0][1]
                         package_price = re.findall(PACKAGE_PRICE, p[0])[0]
@@ -170,6 +168,7 @@ async def get_promotions(page, provider_id: str, rams: list[str]) -> dict:
                     }
 
                     requests.post('http://127.0.0.1:8000/package', json = p_data)
+        break
         print()
 
 
@@ -249,11 +248,13 @@ async def get_model_data(page, id: str, link: str):
 async def get_model_iterator(page, brand: dict):
     for id, link in enumerate(brand['true']):
         await get_model_data(page, brand['_id'], link)
+        break
 
 async def get_data(page, brands: list[str]):
 
     for brand in brands:
         await get_model_iterator(page, brand)
+        break
 
 async def main():
     

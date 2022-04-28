@@ -14,6 +14,8 @@ BRAND_LIST = r'<div [a-eilm-pr-t="\-_ ]+ [adit"=\-]*[\d]+["]+? .+<\/div>'
 # <span class="opt-txt">Apple</span>
 BRAND_NAME = r'<span [aclopstx="->]+(.+)<\/span>'
 
+# uri = 'https://truemoveh.truecorp.co.th/device?search_brand=' + brand + '&search_network=all&page=1'
+
 # BRAND PAGE FOR MODELS SCRAPING
 # '<span class="hpl-red-txt">[0-9]*</span>'
 PAGE_QUANTITY = r'<span [acdehlprstx"=\- ]*>([\d]*)<\/span>'
