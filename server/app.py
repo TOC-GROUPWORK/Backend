@@ -107,7 +107,6 @@ class GetModelSchema(BaseModel):
     color_name: Optional[list]
     color_style: Optional[list]
     img: list = Field(...)
-    detail: dict = Field(...)
 
     class Config:
         arbitrary_types_allowed = True
@@ -120,6 +119,14 @@ class UpdateModelSchema(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+class GetProviderSchema(BaseModel):
+    details: dict = Field(...)
+
+    class Config:
+        arbitrary_types_allowed = True
+        orm_mode = True
         json_encoders = {ObjectId: str}
 
 class ProviderSchema(BaseModel):
@@ -237,20 +244,7 @@ async def get_model(model_id: str):
     model['links']['TRUE'] = model['link_true']
     # model['links']['AIS'] = model['link_ais']
     # model['links']['DTAC'] = model['link_dtac']
-    details = dict()
-    for provider in await db["providers"].find({'model_id': model_id}).to_list(1000):
-        provider_name = provider['provider']
-        details[provider_name] = dict()
-        for detail in await db["details"].find({'provider_id': provider['_id']}, {'provider_id': 0}).to_list(1000):
-            
-            detail['promotions'] = list()
-            for promotion in await db["promotions"].find({'model_detail_id': detail['_id']}, {'model_detail_id': 0}).to_list(1000):
-                packages = await db["packages"].find({'promotion_id': promotion['_id']}, {'promotion_id': 0, 'package_no': 0}).to_list(1000)
-                promotion['packages'] = packages
-                detail['promotions'].append(promotion)
-            
-            details[provider_name][detail['ram']] = detail
-    model['detail'] = details
+    
     return model
 
 @app.post("/model", tags=["Models"], response_description="Add new model", response_model=ModelSchema)
@@ -283,9 +277,30 @@ async def update_model(id: str, model: UpdateModelSchema = Body(...)):
     raise HTTPException(status_code=404, detail=f"Brand {id} not found")
 
 @app.get("/provider/{model_id}", tags=["Providers"], response_description="Get providers", response_model=List[ProviderSchema])
-async def get_providers(model_id: str):
+async def get_providers(model_id: str, provider: GetProviderSchema = Body(...)):
     providers = await db["providers"].find({'model_id': model_id}).to_list(1000)
+
     return providers
+
+@app.get("/provider/{provider_name}/{model_id}", tags=["Providers"], response_description="Get providers", response_model=GetProviderSchema)
+async def get_providers(provider_name: str, model_id: str):
+    print(provider_name, model_id)
+    details = dict()
+    for provider in await db["providers"].find({'model_id': model_id, 'provider': provider_name}).to_list(1000):
+        # if details.get(provider_name, {}) != {} and provider_name == "TRUE":
+        #     continue
+        details[provider_name] = details.get(provider_name, {})
+        for detail in await db["details"].find({'provider_id': provider['_id']}, {'provider_id': 0}).to_list(1000):
+            
+            detail['promotions'] = list()
+            for promotion in await db["promotions"].find({'model_detail_id': detail['_id']}, {'model_detail_id': 0}).to_list(1000):
+                packages = await db["packages"].find({'promotion_id': promotion['_id']}, {'promotion_id': 0, 'package_no': 0}).to_list(1000)
+                promotion['packages'] = packages
+                detail['promotions'].append(promotion)
+            
+            if details[provider_name].get(detail['ram'], []) == []:
+                details[provider_name][detail['ram']] = detail
+    return { 'details' : details }
 
 @app.post("/provider", tags=["Providers"], response_description="Add new provider", response_model=ProviderSchema)
 async def create_provider(provider: ProviderSchema = Body(...)):
